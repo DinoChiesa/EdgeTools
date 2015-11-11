@@ -1,0 +1,127 @@
+{
+  "forums" : [
+    {
+      "name" : "General Discussion",
+      "description": "For discussing general issues related to the use of the APIs documented here.",
+      "weight" : 3,
+
+      "posts" : [
+        {
+          "title": "Usage Limits?",
+          "text" : "Are there usage limits on these APIs?   Just running these API from my test devices results in 10-100 API calls per day.  But if I roll this out to an audience of consumers, it will quickly ramp to 100,000 per day or more.  Are there usage limits on these APIs that would prevent these requests?"
+        },
+        {
+          "title": "Can I use these with Flex?",
+          "text" : "Can I invoke these APIs from Flex? If so, has anyone got any example code to share?  THANKS!!!!!"
+        },
+        {
+          "title": "Invoking from nodejs",
+          "text" : "I'm pretty sure it ought to be easy to invoke these APIs from nodejs. Can anyone show me how?"
+        },
+        {
+          "title" : "Embedding keys securely into the app",
+          "text" : "Suppose I have received my key from Healthsparq.  Now I would like to embed that key into the app that I'm producing for the mobile device. How can I do this securely, so that undesirables will not be able to find the keys or sniff the key as I use it?"
+        },
+        {
+          "title" : "How many API keys do I need?",
+          "text" : "I'm going to be developing Applications for multiple platforms including IOS and android. Do I need multiple keys? What if I have multiple versions of the applications on those various platforms? Should I get different keys for different versions of my applications in development?  Thank you for any help you can provide."
+        },
+        {
+          "title" : "Having a problem getting results in XML format",
+          "text" : "Hi, I'm trying to get XML output from these APIs. But all I can see is JSON. I don't want to parse JSon. Is there way for me to get XML out of the healthsparq APIs?"
+        }
+      ]
+
+    },
+
+    {
+      "name" : "Getting Started",
+      "description": "Questions regarding how to get started, obtaining keys, making the first successful API call, beginning questions.",
+      "weight" : 1,
+      "posts" : [
+        {
+          "title" : "About multiple themes...",
+          "text": "Need to be able to demonstrate multiple themes. (Chris: maybe) eg: Extract a zip file, copy the files to the git directory, git commit, git push, then login to the devportal and apply the new theme."
+        },
+        {
+          "title" : "Getting my key...",
+          "text": "OK, I got my key.  Now what?  Is there a step I need to go through in order to activate the key? I'm getting a failure on my first attempts to use the APIs and I think the key might not be active. Help?"
+        }
+      ]
+    },
+
+    {
+      "name" : "Security and Privacy",
+      "description" : "Questions having to do with security and privacy of the data transmitted over API requests and responses.",
+      "weight" : 5,
+      "posts" : [
+        {
+          "title" : "Who owns the data?",
+          "text" : "Who owns the data sent in with these APIs? Is there an official terms and conditions document that I can look at? Under what conditions will the data be shared with other parties, and which other parties?"
+        },
+        {
+          "title" : "Data retention?",
+          "text" : "What's the policy on data retention? Is there any?"
+        },
+        {
+          "title" : "I'm having trouble with the OAuth authorization code flow",
+          "text" : "I looked through the documentation and I'm still having trouble. Can someone guide me through?"
+        }
+      ]
+    },
+    {
+      "name" : "Advanced Topics",
+      "description" : "Advanced questions that don't fit anywhere else.",
+      "weight" : 7,
+      "posts" : [
+        {
+          "title" : "Typical payload size?",
+          "text" : "How large are the typical payloads for these APIs? Can anyone offer some stats on typical request and response sizes? Does the payload size affect the response time?"
+        },
+        {
+          "title" : "Performance tips?",
+          "text" : "Can anyone offer any performance tips for users of these APIs?  I am building an app for the iPhone and I'd like to know if there are best practices to make things go faster. If there is an optimal authentication mechanism, or if there are way to speed things along in general. Thanks in advance."
+        },
+        {
+          "title" : "What other APIs are complementary to the Healthsparq APIs?",
+          "text" : "Is anyone else using other APIs in apps that also call the Healthsparq APIs? I would like to know if there are complementary APIs out there, And how other people might be using them. I would love to learn from the experience of other people. Thanks for any help you are can provide."
+        }
+      ]
+    },
+    {
+      "name" : "Feature Requests",
+      "description" : "Use this forum to request new features in the APIs, or discuss possible new features.",
+      "weight" : 9,
+      "posts" : [
+        {
+          "title": "Provide sample code in the portal",
+          "text" : "Please provide sample code in the portal to show how to invoke the aPIs from various platforms. Google does this! It'd be nice to have: java, C#, nodejs, and objective-C. PHP is a nice-to-have."
+        }
+      ]
+    }
+  ],
+
+  "faqs" : [
+    {
+      "title": "What is the purpose of these APIs?",
+      "text" : "The APIs published here enable developers to build apps that programmatically access and manage their organization's account and data. These APIs are designed to be simple and intuitive. They ares based on widely accepted standards and conventions, including REST, JSON, and HTTP success and error codes. If you already have experience with other publicly available RESTful APIs, you will feel right at home."
+    },
+    {
+      "title": "Is there a fee to use these APIs?",
+      "text" : "No. The use of the APIs here is free to all registered developers."
+    },
+    {
+      "title": "How do I access the API?",
+      "text" : "If you are an application developer, it will be easy. You will use standard OAuth authentication and authorization to safely access data on behalf of your users without requesting or storing their usernames or passwords. Take advantage of granular access scopes to request only the level of access required for your app. To get the ball rolling, sign up here for a developer account, register your app to get app key and secret and follow our docs to create your first app."
+    },
+    {
+      "title" : "Where can I find examples of code interacting with the API?",
+      "text" : "For every API method listed in our API documentation we provide a sample cURL request and a sample response. For code samples in multiple languages, please see our Github account."
+    },
+    {
+      "title" : "Are there connection limits, throttling, rate limiting, etc?",
+      "text" : "<p>Yes:</p>\n\n<p><b>Connection Limits</b></p>\n\n<p>The current connection limit is 10 simultaneous connections per user account. If you hit that limit, we will be returning a normal error message. You'll have every opportunity to handle that gracefully in your applications. Note: currently there are no options to raise that limit on a per-customer basis.</p>\n\n<p><b>Rate Limit Throttling</b></p>\n\n<p>Our previous sleep-based throttling has been removed. It is likely that we will add some sort of rate-limiting back to the API in the future, but that rate limiting will return errors when the limit is exceeded. We will try to give advance notice of the introduction of any rate limiting. To be notified of changes like that, you'll want to subscribe to the API Announce mailing list. </p>\n\n<p>It should be pretty rare to have either the Connection Limits or Throttling affect you unless you are trying to be abusive or have some code that is broken. If you fall into the latter case, see the use-case information below, or contact us and we'll be happy to help.</p>"
+    }
+  ]
+
+}

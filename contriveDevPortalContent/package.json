@@ -1,0 +1,17 @@
+{
+  "name": "edge-dev-portal-content-contriver",
+  "version": "0.1.0",
+  "description": "Tool that contrives dev portal forums and content",
+  "main": "contriveDevPortalContent.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "dchiesa@apigee.com",
+  "license": "MIT",
+  "dependencies": {
+    "node-getopt": "0.2.3",
+    "request": "2.53.0",
+    "async" : "0.9.0",
+    "netrc" : "0.1.3"
+  }
+}

@@ -4,7 +4,7 @@
 // ------------------------------------------------------------------
 // "bulk export" APIs from an Edge org.
 //
-// last saved: <2015-February-20 16:40:36>
+// last saved: <2015-November-11 07:29:59>
 
 var fs = require('fs'),
     path = require('path'),
@@ -46,7 +46,7 @@ function exportAllRevisions(apirev, cb) {
             .get(url, requestOptions)
             .on('response', function(response) {
               //console.log(response.statusCode);
-              if (opt.options.verbose > 1) {
+              if (opt.options.verbose) {
                 console.log('  ' + filename);
               }
               else {
@@ -66,7 +66,7 @@ function exportAllRevisions(apirev, cb) {
       console.log(e);
       process.exit(1);
     }
-    if (opt.options.verbose <= 1) { console.log(); }
+    if ( ! opt.options.verbose) { console.log(); }
     cb(null, exportResponse);
   });
 }
@@ -82,7 +82,7 @@ function getApiRevisions(api, cb) {
                   cb(error);
                 }
                 else if (response.statusCode == 200) {
-                  if (opt.options.verbose > 1) {
+                  if (opt.options.verbose) {
                     console.log('%s: %s', api, body);
                   }
                   else {
@@ -112,7 +112,7 @@ function getApis(cb) {
                 }
                 else if (response.statusCode == 200) {
                   stack = JSON.parse(body);
-                  if (opt.options.verbose > 1) {
+                  if (opt.options.verbose) {
                     console.log('found %d apis:', stack.length);
                     console.log(JSON.stringify(stack, null, 2));
                   }
@@ -156,6 +156,12 @@ if (opt.options.netrc) {
 
 if ( !opt.options.username || !opt.options.password) {
   console.log('You must provide some way to authenticate to the Edge Management API');
+  getopt.showHelp();
+  process.exit(1);
+}
+
+if ( !opt.options.org ) {
+  console.log('You must specify an Edge organization');
   getopt.showHelp();
   process.exit(1);
 }
