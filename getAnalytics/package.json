@@ -1,0 +1,18 @@
+{
+  "name": "get-analytics",
+  "version": "1.0.0",
+  "description": "",
+  "main": "getAnalytics.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "dchiesa@apigee.com",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "netrc": "^0.1.4",
+    "node-getopt": "^0.2.3",
+    "q": "^1.4.1",
+    "request": "^2.69.0",
+    "sprintf": "^0.1.5"
+  }
+}
