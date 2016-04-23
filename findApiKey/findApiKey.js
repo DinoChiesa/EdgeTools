@@ -4,14 +4,14 @@
 // ------------------------------------------------------------------
 // find the developer and app name for an API key from an Edge org.
 //
-// last saved: <2016-February-06 11:02:09>
+// last saved: <2016-March-15 12:19:59>
 
 var fs = require('fs'),
     path = require('path'),
     request = require('request'),
     async = require('async'),
     Getopt = require('node-getopt'),
-    version = 'Saturday,  6 February 2016, 10:45',
+    version = '20160315-1219',
     netrc = require('netrc')(),
     exportDir = 'exported-' + new Date().getTime(),  // ms since epoch
     mgmtUrl,
