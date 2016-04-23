@@ -1,17 +1,17 @@
 #! /usr/local/bin/node
 /*jslint node:true */
-// contriveDevPortalContent.js
+// loadDevPortalContent.js
 // ------------------------------------------------------------------
-// Create "canned" dev portal content (forum, faqs) via REST APIs.
+// load "canned" dev portal content (forum, faqs) via REST APIs.
 //
-// last saved: <2015-March-25 18:16:00>
+// last saved: <2016-April-23 09:02:43>
 
 var fs = require('fs'),
     path = require('path'),
     request = require('request'),
     async = require('async'),
     Getopt = require('node-getopt'),
-    version = 'Wednesday, 18 March 2015, 12:45',
+    version = '20160423-0902',
     netrc = require('netrc')(),
     exportDir = 'exported-' + new Date().getTime(),  // ms since epoch
     drupalUrl,
@@ -509,7 +509,7 @@ function deleteNodesOfType(type, cb) {
 // ========================================================
 
 console.log(
-  'Edge Dev Portal Forum Content Contriver Tool, version: ' + version + '\n' +
+  'Edge Dev Portal Forum Content Loader Tool, version: ' + version + '\n' +
     'Node.js ' + process.version + '\n');
 
 // process.argv array starts with 'node' and 'scriptname.js'
