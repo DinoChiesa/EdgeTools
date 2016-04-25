@@ -7,7 +7,9 @@
 #  - deletes all developer apps 
 #  - deletes all API Products 
 #  - deletes all developers
-#  - undeploys all APIs from any environment in a given organization
+#  - undeploys all API proxies from any environment in a given organization
+#  - deletes  all API proxies
+#  - remove KVMs, vaults, custom reports, although this is not well tested
 #
 # optionally, it can also: 
 #  - dis-associates servers from environments
@@ -18,14 +20,16 @@
 # The latter group may be helpful if you are using OPDK.
 #
 # BUGS: 
-# - does not remove KVMs, vaults, custom reports
-# - does not remove vhosts
+# - does not remove vhosts from environments. Should it? 
+# - does not remove ldap resources. Should it? 
+# - not fully tested
+# - relies on python for parsing json.  ick.
 # 
 # Copyright © 2014,2016 Dino Chiesa and Apigee Corp
 # All rights reserved.
 #
 # created: 2014-Jun-03
-# Last saved: <2016-April-25 11:20:51>
+# Last saved: <2016-April-25 11:28:15>
 #
 
 verbosity=1
