@@ -4,7 +4,7 @@
 // ------------------------------------------------------------------
 // "bulk export" APIs from an Edge org.
 //
-// last saved: <2016-April-27 18:40:30>
+// last saved: <2016-April-27 18:43:14>
 
 var fs = require('fs'),
     path = require('path'),
@@ -163,7 +163,6 @@ if ( !opt.options.password) {
   opt.options.password = readlineSync.question(' Password for '+opt.options.username + ' : ',
                                                     {hideEchoBack: true});
 }
-
 
 if ( !opt.options.username || !opt.options.password) {
   console.log('You must provide some way to authenticate to the Edge Management API');
