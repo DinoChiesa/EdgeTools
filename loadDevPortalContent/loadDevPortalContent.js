@@ -4,14 +4,15 @@
 // ------------------------------------------------------------------
 // load "canned" dev portal content (forum, faqs) via REST APIs.
 //
-// last saved: <2016-April-23 09:02:43>
+// last saved: <2016-April-27 18:37:42>
 
 var fs = require('fs'),
     path = require('path'),
     request = require('request'),
     async = require('async'),
+    readlineSync = require('readline-sync'),
     Getopt = require('node-getopt'),
-    version = '20160423-0902',
+    version = '20160427-1837',
     netrc = require('netrc')(),
     exportDir = 'exported-' + new Date().getTime(),  // ms since epoch
     drupalUrl,
@@ -527,11 +528,22 @@ if (gOptions.options.netrc) {
   gOptions.options.password = netrc[drupalUrl.hostname].password;
 }
 
+if ( !gOptions.options.username) {
+  gOptions.options.username = readlineSync.question(' USER NAME  : ');
+}
+
+if ( !gOptions.options.password) {
+  gOptions.options.password = readlineSync.question(' Password for '+gOptions.options.username + ' : ',
+                                                    {hideEchoBack: true});
+}
+
 if ( !gOptions.options.username || !gOptions.options.password) {
   console.log('You must provide some way to authenticate to Drupal');
   getopt.showHelp();
   process.exit(1);
 }
+
+
 if ( !gOptions.options.server) {
   console.log('You must specify the Drupal server');
   getopt.showHelp();
