@@ -15,6 +15,7 @@
 
 var https = require('https'),
     request = require('request'),
+    readlineSync = require('readline-sync'),
     q = require('q'),
     fs = require('fs'),
     url = require('url'),
@@ -185,6 +186,15 @@ if (opt.options.netrc) {
 
   opt.options.username = netrc[mgmtUrl.hostname].login;
   opt.options.password = netrc[mgmtUrl.hostname].password;
+}
+
+if ( !opt.options.username) {
+  opt.options.username = readlineSync.question(' USER NAME  : ');
+}
+
+if ( !opt.options.password) {
+  opt.options.password = readlineSync.question(' Password for '+opt.options.username + ' : ',
+                                                    {hideEchoBack: true});
 }
 
 if ( !opt.options.username || !opt.options.password) {

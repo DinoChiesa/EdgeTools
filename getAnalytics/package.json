@@ -12,6 +12,7 @@
     "netrc": "^0.1.4",
     "node-getopt": "^0.2.3",
     "q": "^1.4.1",
+    "readline-sync": "^1.4.1",
     "request": "^2.69.0",
     "sprintf": "^0.1.5"
   }
