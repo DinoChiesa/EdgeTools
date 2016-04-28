@@ -9,9 +9,10 @@
   "author": "dchiesa@apigee.com",
   "license": "MIT",
   "dependencies": {
+    "async": "0.9.0",
+    "netrc": "0.1.3",
     "node-getopt": "0.2.3",
-    "request": "2.53.0",
-    "async" : "0.9.0",
-    "netrc" : "0.1.3"
+    "readline-sync": "^1.4.1",
+    "request": "2.53.0"
   }
 }

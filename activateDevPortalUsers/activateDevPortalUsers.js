@@ -13,7 +13,7 @@
 //
 // Invoke the script with no arguments to get help.
 //
-// last saved: <2015-April-08 14:28:02>
+// last saved: <2016-April-27 18:41:22>
 //
 // Copyright (c) 2015 Dino Chiesa and Apigee Corp
 // All Rights Reserved.
@@ -53,6 +53,7 @@
 var fs = require('fs'),
     path = require('path'),
     request = require('request'),
+    readlineSync = require('readline-sync'),
     async = require('async'),
     sprintf=require("sprintf-js").sprintf,
     Getopt = require('node-getopt'),
@@ -325,6 +326,15 @@ if (gOptions.options.netrc) {
 
   gOptions.options.username = netrc[drupalUrl.hostname].login;
   gOptions.options.password = netrc[drupalUrl.hostname].password;
+}
+
+if ( !gOptions.options.username) {
+  gOptions.options.username = readlineSync.question(' USER NAME  : ');
+}
+
+if ( !gOptions.options.password) {
+  gOptions.options.password = readlineSync.question(' Password for '+gOptions.options.username + ' : ',
+                                                    {hideEchoBack: true});
 }
 
 if ( !gOptions.options.username || !gOptions.options.password) {

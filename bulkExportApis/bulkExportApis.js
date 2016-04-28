@@ -4,14 +4,15 @@
 // ------------------------------------------------------------------
 // "bulk export" APIs from an Edge org.
 //
-// last saved: <2015-November-11 07:29:59>
+// last saved: <2016-April-27 18:40:30>
 
 var fs = require('fs'),
     path = require('path'),
     request = require('request'),
+    readlineSync = require('readline-sync'),
     async = require('async'),
     Getopt = require('node-getopt'),
-    version = 'Friday, 20 February 2015, 14:38',
+    version = '20160427-1840',
     netrc = require('netrc')(),
     exportDir = 'exported-' + new Date().getTime(),  // ms since epoch
     mgmtUrl,
@@ -153,6 +154,16 @@ if (opt.options.netrc) {
   opt.options.username = netrc[mgmtUrl.hostname].login;
   opt.options.password = netrc[mgmtUrl.hostname].password;
 }
+
+if ( !opt.options.username) {
+  opt.options.username = readlineSync.question(' USER NAME  : ');
+}
+
+if ( !opt.options.password) {
+  opt.options.password = readlineSync.question(' Password for '+opt.options.username + ' : ',
+                                                    {hideEchoBack: true});
+}
+
 
 if ( !opt.options.username || !opt.options.password) {
   console.log('You must provide some way to authenticate to the Edge Management API');
