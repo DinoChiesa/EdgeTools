@@ -31,7 +31,7 @@
 // with the given username or email already exists in Drupal, that one
 // will be skipped.
 //
-// last saved: <2015-April-08 09:35:11>
+// last saved: <2016-April-27 18:45:09>
 //
 // Copyright (c) 2015 Dino Chiesa and Apigee Corp
 // All Rights Reserved.
@@ -71,6 +71,7 @@
 var fs = require('fs'),
     path = require('path'),
     request = require('request'),
+    readlineSync = require('readline-sync'),
     async = require('async'),
     csvparser = require('fast-csv'),
     Getopt = require('node-getopt'),
@@ -346,6 +347,15 @@ if (gOptions.options.netrc) {
 
   gOptions.options.username = netrc[drupalUrl.hostname].login;
   gOptions.options.password = netrc[drupalUrl.hostname].password;
+}
+
+if ( !gOptions.options.username) {
+  gOptions.options.username = readlineSync.question(' USER NAME  : ');
+}
+
+if ( !gOptions.options.password) {
+  gOptions.options.password = readlineSync.question(' Password for '+gOptions.options.username + ' : ',
+                                                    {hideEchoBack: true});
 }
 
 if ( !gOptions.options.username || !gOptions.options.password) {
