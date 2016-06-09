@@ -24,14 +24,14 @@ Current parameter values:
 ## Example output:
 
 ```
-$ ./diffApiproxyRevisions.sh -o nordstrom-eval1 -a bluegreen -R 9 -R 11 -n
+$ ./diffApiproxyRevisions.sh -o austins-eval1 -a bluegreen -R 9 -R 11 -n
 
 This script downloads two API proxy revisions and performs a diff on them.
 ==============================================================================
 
 
-  checking org nordstrom-eval1...
-curl -X GET https://api.enterprise.apigee.com/v1/o/nordstrom-eval1
+  checking org austins-eval1...
+curl -X GET https://api.enterprise.apigee.com/v1/o/austins-eval1
 ==> 200
 9
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
