@@ -52,8 +52,29 @@ After running the script, all new content will be available.
 
 
 
+## Bulk Export APIs
+
+[This tool](bulkExportApis) exports all API proxies in an Edge organization. 
+
+
+## Find API Key
+
+Given an API Key, [the findApiKey tool](findApiKey) finds which Developer App it belongs to. 
 
 
 
+## API Proxy Diff
+
+[This tool](diffApiProxyRevisions) downloads 2 revisions of an API Proxy from Edge, and
+performs a diff on them. 
 
 
+## BaaS Loader + Exporter
+
+[This set of scripts](baasLoadExport) helps do three things:
+
+* load items into a BaaS/Usergrid collection
+* exports items from a BaaS/Usergrid collection into a file
+* deletes all items from a BaaS/Usergrid collection
+
+These tools are built in nodejs. 
