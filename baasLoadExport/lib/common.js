@@ -4,7 +4,7 @@
 // common functions used by the loader and deleteAllItems scripts.
 //
 // created: Mon Jun  6 17:32:20 2016
-// last saved: <2016-June-07 20:03:59>
+// last saved: <2016-June-10 10:07:46>
 
 (function (globalScope){
   var util = require('util'),
@@ -74,8 +74,8 @@
     }
   }
 
-  function processOptions(getopt, args) {
-    var opt = getopt.parse(args), baasConn;
+  function processOptions(opt) {
+    var baasConn;
 
     if (opt.options.config) {
       baasConn = JSON.parse(fs.readFileSync(opt.options.config, 'utf8'));
@@ -126,11 +126,74 @@
     return baasConn;
   }
 
+
+
+  /*
+   * ugCollectionForEach
+   *
+   * iterates through all items in a collection within Apigee Edge BaaS.
+   * Uses the Usergrid client object from the usergrid module.
+   *
+   * @param ugClient - the authenticated client object
+   * @param options - the options for a collection. Pass type and qs.
+   * @param f - function called with each UG entity. Accepts a single argument.
+   * @param doneCb - called in case of error or success.
+   *
+   *********************************************/
+  function ugCollectionForEach (ugClient, options, f, doneCb) {
+    // call the function f once for each item in a collection
+    var results = {count: 0, failCount: 0, page: 0};
+    if ( ! options.qs) {
+      doneCb(new Error('missing qs property in the options argument'), null);
+    }
+    if ( ! options.type) {
+      doneCb(new Error('missing type property in the options argument'), null);
+    }
+
+    ugClient.createCollection(options, function (e, collection) {
+      var e2;
+      function doOnePage(collection, cb) {
+        while(collection.hasNextEntity()) {
+          f(collection.getNextEntity(), results);
+          results.count++;
+        }
+        if (collection.hasNextPage()) {
+          collection.getNextPage(function(e){
+            if (e) {
+              e2 = new Error('could not get next page of entities');
+              e2.wrappedError = e;
+              cb(e2, results);
+            }
+            else {
+              results.page++;
+              logWrite('page %d', results.page);
+              doOnePage(collection, cb);
+            }
+          });
+        }
+        else {
+          cb(null, results);
+        }
+      }
+
+      if (e) {
+        e2 = new Error('could not make or get collection');
+        e2.wrappedError = e;
+        doneCb(e2, null);
+      }
+      else {
+        doOnePage(collection, doneCb);
+      }
+    });
+  }
+
+
   module.exports = {
     logWrite : logWrite,
     elapsedToHHMMSS : elapsedToHHMMSS,
     usergridAuth : usergridAuth,
-    processOptions : processOptions
+    processOptions : processOptions,
+    ugCollectionForEach : ugCollectionForEach
   };
 
 

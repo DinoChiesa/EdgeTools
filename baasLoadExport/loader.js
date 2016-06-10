@@ -6,7 +6,7 @@
 // Load JSON collections into an API BaaS organization + app.
 //
 // created: Thu Feb  5 19:29:44 2015
-// last saved: <2016-June-07 19:50:19>
+// last saved: <2016-June-10 09:40:12>
 
 var fs = require('fs'),
     path = require('path'),
@@ -131,9 +131,9 @@ function doUploadWork (ugClient, collectionName, data, cb) {
 
 
 function main(args) {
-  var collection, baasConn;
+  var collection, baasConn, opt = getopt.parse(args);
   try {
-    baasConn = common.processOptions(getopt, args);
+    baasConn = common.processOptions(opt);
     common.logWrite('start');
     startTime = new Date();
     common.usergridAuth(baasConn, function (e, ugClient){
