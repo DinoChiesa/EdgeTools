@@ -78,6 +78,12 @@ Notice, no URI property there.  To authenticate with user credentials,  you must
 
 
 
-## Exporting Baas Data: Nope
+## Exporting Baas Data
 
-There are no tools here that export data from BaaS Collections.
+There is a tool to export a single collection here.  It is called exportAllItems.js.
+It's naive: it does not export connections or relationships. 
+
+Example command specifying a configuration file:
+```node ./exportAllItems.js -c config/real-config.json -f my-collection-export.json```
+
+You could use this coupled witht he loader to migrate a collection of data from one BaaS app to another. 
