@@ -77,4 +77,13 @@ performs a diff on them.
 * exports items from a BaaS/Usergrid collection into a file
 * deletes all items from a BaaS/Usergrid collection
 
+
+# Notes
+
 These tools are built in nodejs. 
+
+# License
+
+This material is copyright 2015,2016 Apigee Corporation. 
+and is licensed under the Apache 2.0 license. See the [LICENSE](LICENSE) file. 
+
