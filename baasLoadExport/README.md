@@ -84,6 +84,17 @@ There is a tool to export a single collection here.  It is called exportAllItems
 It's naive: it does not export connections or relationships. 
 
 Example command specifying a configuration file:
-```node ./exportAllItems.js -c config/real-config.json -f my-collection-export.json```
+```
+node ./exportAllItems.js -c config/real-config.json -f my-collection-export.json
+```
 
-You could use this coupled witht he loader to migrate a collection of data from one BaaS app to another. 
+You could use this coupled with the loader to migrate a collection of data from one BaaS app to another. 
+
+
+## Loading Data 
+
+It reads all the JSON files in the data directory and loads them into the specified BaaS application.
+
+```
+node ./loader.js -o dino -a workshop -i YXsjhsiXoFUyEeaVzhg -s YXA653alN5kddd5k 
+```

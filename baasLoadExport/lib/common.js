@@ -4,7 +4,7 @@
 // common functions used by the loader and deleteAllItems scripts.
 //
 // created: Mon Jun  6 17:32:20 2016
-// last saved: <2016-June-10 10:07:46>
+// last saved: <2016-July-28 19:17:25>
 
 (function (globalScope){
   var util = require('util'),
@@ -74,7 +74,7 @@
     }
   }
 
-  function processOptions(opt) {
+  function processOptions(opt, getopt) {
     var baasConn;
 
     if (opt.options.config) {
@@ -113,14 +113,14 @@
 
     if ( !baasConn.org || !baasConn.app) {
       console.log('must supply baas org and app');
-      getopt.showHelp();
+      if (getopt) { getopt.showHelp(); }
       process.exit(1);
     }
 
     if ( ! ((baasConn.clientid && baasConn.clientsecret) ||
             (baasConn.username && baasConn.password))) {
       console.log('must supply username+password -or- clientid+clientsecret');
-      getopt.showHelp();
+      if (getopt) { getopt.showHelp(); }
       process.exit(1);
     }
     return baasConn;

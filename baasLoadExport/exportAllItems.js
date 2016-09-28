@@ -6,7 +6,7 @@
 // Demonstrate how to iteratively export all items in a BaaS collection.
 //
 // created: Mon Feb  9 11:18:18 2015
-// last saved: <2016-June-10 10:09:15>
+// last saved: <2016-July-28 19:18:01>
 
 var fs = require('fs'),
     util = require('util'),
@@ -65,7 +65,7 @@ function storeOneEntity(writer, entity, status) {
   var data = JSON.stringify(entity._data);
   var ok = writer.write(data);
   // ok=false implies back pressure, the stream will buffer in memory. But
-  // we ignore that here. 
+  // we ignore that here.
 }
 
 
@@ -74,8 +74,8 @@ function storeOneEntity(writer, entity, status) {
 function main(args) {
   var collection, baasConn, opt = getopt.parse(args);
   try {
-    baasConn = common.processOptions(opt);
-    
+    baasConn = common.processOptions(opt, getopt);
+
     if (baasConn.collection && opt.options.file) {
       console.log('using org:%s app:%s, export all items from collection: %s to file %s\n',
                   baasConn.org, baasConn.app, baasConn.collection, opt.options.file);
@@ -101,7 +101,7 @@ function main(args) {
                                      entityStorer,
                                      function(e, status) { allDone(e, status, writer, startTime); });
         });
-          
+
       });
     }
     else {

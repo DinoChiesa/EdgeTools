@@ -6,10 +6,11 @@
 // Load JSON collections into an API BaaS organization + app.
 //
 // created: Thu Feb  5 19:29:44 2015
-// last saved: <2016-June-10 09:40:12>
+// last saved: <2016-July-28 19:41:01>
 
 var fs = require('fs'),
     path = require('path'),
+    q = require('q'),
     Getopt = require('node-getopt'),
     common = require('./lib/common.js'),
     _ = require('lodash'),
@@ -92,48 +93,66 @@ function postBatch(batch, ugClient, collection, cb) {
 }
 
 
-
-function doUploadWork (ugClient, collectionName, data, cb) {
-  var outstandingRequests = 0,
-      stack = [];
-
-  data.forEach(function(item){
-    count++;
-    stack.push(item);
-    // if (count % 100 === 0) {
-    //   process.stdout.write('.');
-    // }
-    if (count % batchSize === 0) {
-      //process.stdout.write('.');
-      postBatch(stack, ugClient, collectionName, function(e, data) {
-        stack = [];
-        if (count == data.length) {
-          cb(null);
-        }
-      });
-    }
-    if ((count != data.length) && (count % (100 * batchSize) === 0)) {
-      var splitTime = new Date(),
-          value = splitTime - startTime;
-      common.logWrite(' %d elapsed %s', count, common.elapsedToHHMMSS(value));
-    }
-  });
-
-  if (stack.length > 0) {
-    //process.stdout.write('.');
-    postBatch(stack, ugClient, collectionName, function(e, data) {
-      stack = [];
-      cb(null);
-    });
+function arrayToChunks(chunkSize, a) {
+  var chunks = [];
+  for (var i=0, L=a.length; i<L; i+=chunkSize) {
+    chunks.push(a.slice(i,i+chunkSize));
   }
+  return chunks;
 }
 
+var toBatches = _.curry(arrayToChunks)(batchSize);
+
+function doUploadWork (ugClient, collectionName, data, cb) {
+  toBatches(data)
+    .reduce(function(promise, batch) {
+      return promise.then(function() {
+        var d = q.defer();
+        postBatch(batch, ugClient, collectionName,
+                  function(e, data) {
+                    d.resolve({});
+                  });
+        return d.promise;
+      });
+    }, q({}))
+    .then(function () {
+      cb(null);
+    }, function(e) {
+      cb(e);
+    });
+}
+
+
+
+  // data.forEach(function(item){
+  //   count++;
+  //   stack.push(item);
+  //   // if (count % 100 === 0) {
+  //   //   process.stdout.write('.');
+  //   // }
+  //   if (count % batchSize === 0) {
+  //     //process.stdout.write('.');
+  //   }
+  //   if ((count != data.length) && (count % (100 * batchSize) === 0)) {
+  //     var splitTime = new Date(),
+  //         value = splitTime - startTime;
+  //     common.logWrite(' %d elapsed %s', count, common.elapsedToHHMMSS(value));
+  //   }
+  // });
+  //
+  // if (stack.length > 0) {
+  //   //process.stdout.write('.');
+  //   postBatch(stack, ugClient, collectionName, function(e, data) {
+  //     stack = [];
+  //     cb(null);
+  //   });
+  // }
 
 
 function main(args) {
   var collection, baasConn, opt = getopt.parse(args);
   try {
-    baasConn = common.processOptions(opt);
+    baasConn = common.processOptions(opt, getopt);
     common.logWrite('start');
     startTime = new Date();
     common.usergridAuth(baasConn, function (e, ugClient){

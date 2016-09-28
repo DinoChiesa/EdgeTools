@@ -2,19 +2,20 @@
   "name": "baas-collection-loader",
   "description": "simple app that loads collection data (like hospitality data) into a usergrid organization + application.",
   "version": "0.1.0",
-  "author" : {
-    "name" : "Dino Chiesa",
+  "author": {
+    "name": "Dino Chiesa",
     "email": "Dino Chiesa <dchiesa@apigee.com>"
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "readline-sync": "^1.4.1",
+    "lodash": "~4.13.1",
     "node-getopt": "~0.2.3",
-    "util" : "~0.10.3",
-    "lodash" : "~4.13.1",
-    "usergrid": "~0.10.11"
+    "q": "^1.4.1",
+    "readline-sync": "^1.4.1",
+    "usergrid": "~0.10.11",
+    "util": "~0.10.3"
   },
-  "scripts" : {
+  "scripts": {
     "start": "node loader.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
