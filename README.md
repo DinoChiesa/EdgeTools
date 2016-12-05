@@ -78,12 +78,19 @@ performs a diff on them.
 * deletes all items from a BaaS/Usergrid collection
 
 
+## New Keystore
+
+[The newKeystore tool](newKeystore) creates a JAR and imports it into a new Keystore. This is handy
+when updating certs that will expire, as documented [here](http://docs.apigee.com/api-services/content/keystores-and-truststores#createakeystore).
+
+
 # Notes
 
-These tools are built in nodejs. 
+These tools are built in nodejs, and in bash. 
 
 # License
 
-This material is copyright 2015,2016 Apigee Corporation. 
+This material is Copyright 2015-2016 Apigee Corporation, 
+and Copyright 2016 Google, Inc.
 and is licensed under the Apache 2.0 license. See the [LICENSE](LICENSE) file. 
 
