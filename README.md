@@ -5,7 +5,7 @@ Tools for working with Apigee Edge
 
 A note about enabling Drupal's REST Services...
 
-Some of the tools in this repo invoke REST APIs exposed by Drupal to perform various operations, like creating new users, deleting and creating new portal content, new FAQs, and so on. All of these operations require the REST services to be enabled in Drupal.
+Some of the tools in this repo invoke Administrative REST APIs on Apigee Edge.  Some of the tools in this repo invoke REST APIs exposed by Drupal to perform various operations, like creating new users, deleting and creating new portal content, new FAQs, and so on. For the tools that invoke REST APIs on Drupal, all of the operations require the REST services to be enabled in Drupal.
 
 [This blog post](https://www.dinochiesa.net/?p=1297) describes in some detail the how and why of setting up REST access into Drupal 7.
 
