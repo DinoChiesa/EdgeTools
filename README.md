@@ -80,8 +80,14 @@ performs a diff on them.
 
 ## New Keystore
 
-[The newKeystore tool](newKeystore) creates a JAR and imports it into a new Keystore. This is handy
+[The newKeystore tool](newKeystore) creates a JAR and imports it into a new [Keystore](http://docs.apigee.com/api-services/content/keystores-and-truststores).
+Also creates a new keystore Reference (a magical type of thing that is not documented by Apigee at this moment). This tool is handy
 when updating certs that will expire, as documented [here](http://docs.apigee.com/api-services/content/keystores-and-truststores#createakeystore).
+
+Using keystores and references for your vhosts applies only when the TLS terminates at
+the Edge routers.  If you are using a hosted Apigee Edge organization, your TLS may
+terminate at a load balancer.  In which case, this tool does not apply, and you should
+contact Apigee Support directly.
 
 
 # Notes

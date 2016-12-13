@@ -2,7 +2,7 @@
 # -*- mode:shell-script; coding:utf-8; -*-
 #
 # Created: <Mon Dec  5 12:23:02 2016>
-# Last Updated: <2016-December-05 15:31:00>
+# Last Updated: <2016-December-12 17:28:30>
 #
 
 verbosity=2
@@ -10,6 +10,7 @@ orgname=""
 certfile=""
 keyfile=""
 keystore=""
+keystoreref=""
 tmpksdir=""
 privkeypass=""
 TIMESTAMP=""
@@ -37,6 +38,8 @@ function usage() {
   echo "  -c file   required. cert file."
   echo "  -k file   required. private key file."
   echo "  -t tag    optional. tag name to use as a part of the names for keystore, keyalias, and cert."
+  echo "  -K name   optional. Name for the keystore. Overrides the generated name using the tag from -t."
+  echo "  -R ref    required. Name for the keystore reference."
   echo "  -p pwd    optional. password for the private key file, if needed."
   echo "  -v        optional. verbose; increase verbosity by 1"
   echo
@@ -319,6 +322,7 @@ function validateKeyStore() {
     [[ $verbosity -gt 0 ]] && echo "verifying that the keystore does not yet exist..."
     MYCURL -X GET ${mgmtserver}/v1/o/${orgname}/e/${envname}/keystores/${keystore}
     if [ ${CURL_RC} -eq 200 ]; then
+        echo CURL_RC = ${CURL_RC}
         echo error: the keystore already exists.
         echo
         cat ${CURL_OUT}
@@ -330,11 +334,25 @@ function validateKeyStore() {
 }
 
 function createKeyStore() {
+    local payload
     [[ $verbosity -gt 0 ]] && echo "creating the keystore..."
-    MYCURL -X POST -H "Content-Type: text/xml" \
+    # the whitespace in this payload is just for prettifying the output in verbose mode
+    payload=$'\n  {\n'
+    payload+=$'    "name" : "'${keystore}$'"\n'
+    payload+=$'  }\n'
+
+    # payload=$'\n'
+    # payload+=$'  <KeyStore name="'${keystore}'"/>'
+    # MYCURL -X POST -H "Content-Type: text/xml" \
+    #        ${mgmtserver}/v1/o/${orgname}/e/${envname}/keystores \
+    #        -d "${payload}"
+    
+    MYCURL -X POST -H content-type:application/json \
            ${mgmtserver}/v1/o/${orgname}/e/${envname}/keystores \
-           -d '<KeyStore name="'${keystore}'"/>'
+           -d "${payload}"
+    
     if [ ${CURL_RC} -ne 201 ]; then
+        echo CURL_RC = ${CURL_RC}
         echo an error occurred while creating the keystore.
         echo
         cat ${CURL_OUT}
@@ -355,7 +373,9 @@ function populateKeyStore() {
     local keyalias=${nametag:-keyalias-$(gen_timestamp)} privkeypass passParams="" qparams
     qparams="alias=${keyalias}"
     if [[ $privKeyPemIsEncrypted -eq 1 ]]; then
-        echo -n "Private key password: "
+        echo 
+        echo "The private key is encrypted."
+        echo -n "Please provide the password for the private key: "
         read -s privkeypass
         echo
         qparams+=$'&password='
@@ -409,6 +429,7 @@ function verifyKeyStore() {
     MYCURL -X GET "${mgmtserver}/v1/o/${orgname}/e/${envname}/keystores/${keystore}"
 
     if [[ ${CURL_RC} -ne 200 ]]; then
+        echo CURL_RC = ${CURL_RC}
         echo an error occurred while verifying the keystore.
         echo
         cat ${CURL_OUT}
@@ -426,9 +447,42 @@ function verifyKeyStore() {
     MYCURL -X GET "${mgmtserver}/v1/o/${orgname}/e/${envname}/keystores/${keystore}/keys"
 
     if [[ ${CURL_RC} -ne 200 ]]; then
+        echo CURL_RC = ${CURL_RC}
         echo an error occurred while verifying the keystore.
         echo
         cat ${CURL_OUT}
+        echo
+        echo
+        CleanUp
+        exit
+    fi
+    
+    if [[ $verbosity -gt 1 ]]; then
+      cat ${CURL_OUT}
+      echo
+    fi
+}
+
+function populateKeyStoreRef() {
+    local payload
+    [[ $verbosity -gt 0 ]] && echo "creating the keystore reference..."
+    
+    # the whitespace in this payload is just for prettifying the output in verbose mode
+    payload=$'\n  {\n'
+    payload+=$'    "name" : "'${keystoreref}$'",\n'
+    payload+=$'    "refers" : "'${keystore}$'",\n'
+    payload+=$'    "resourceType" : "KeyStore"\n'
+    payload+=$'  }\n'
+
+    MYCURL -X POST -H content-type:application/json \
+           ${mgmtserver}/v1/o/${orgname}/e/${envname}/references \
+           -d "${payload}"
+    
+    if [[ ${CURL_RC} -ne 201 ]]; then
+        echo CURL_RC = ${CURL_RC}
+        echo an error occurred while creating the keystore reference
+        echo
+        [[ -f ${CURL_OUT} ]] && cat ${CURL_OUT}
         echo
         echo
         CleanUp
@@ -449,7 +503,7 @@ echo
 echo "This script creates a keystore JAR and creates a new keystore in Edge. "
 echo "=============================================================================="
 
-while getopts "hm:o:e:u:nK:c:k:t:qv" opt; do
+while getopts "hm:o:e:u:nc:k:t:K:R:qv" opt; do
   case $opt in
     h) usage ;;
     m) mgmtserver=$OPTARG ;;
@@ -457,10 +511,11 @@ while getopts "hm:o:e:u:nK:c:k:t:qv" opt; do
     e) envname=$OPTARG ;;
     u) credentials="-u $OPTARG" ;;
     n) netrccreds=1 ;;
-    K) keystore=$OPTARG ;;
     c) certfile=$OPTARG ;;
     k) keyfile=$OPTARG ;;
     t) nametag=$OPTARG ;;
+    K) keystore=$OPTARG ;;
+    R) keystoreref=$OPTARG ;;
     q) verbosity=$(($verbosity-1)) ;;
     v) verbosity=$(($verbosity+1)) ;;
     *) echo "unknown arg" && usage ;;
@@ -485,6 +540,13 @@ if [[ "X$envname" = "X" ]]; then
     usage
     exit 1
 fi
+
+if [[ "X$keystoreref" = "X" ]]; then
+    echo "You must specify a name for the keystore ref (-R)."
+    echo
+    usage
+    exit 1
+fi 
 
 if [[ "X$credentials" = "X" ]]; then
   if [[ ${netrccreds} -eq 1 ]]; then
@@ -514,7 +576,7 @@ fi
 if [[ "X$keystore" = "X" ]]; then
     keystore="${nametag:-keystore}-"$(gen_timestamp)
     [[ $verbosity -gt 0 ]] && echo "using keystore name: ${keystore}"
-fi 
+fi
 
 validateCertFile
 validatePrivateKeyFile
@@ -523,6 +585,8 @@ createKeystoreJar
 createKeyStore
 populateKeyStore
 verifyKeyStore
+populateKeyStoreRef
+
 
 echo 
 echo done.
