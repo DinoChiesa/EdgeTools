@@ -1,10 +1,10 @@
 // common.js
 // ------------------------------------------------------------------
 //
-// common functions used by the loader and deleteAllItems scripts.
+// common functions used by the loader, exportAllItems, and deleteAllItems scripts.
 //
 // created: Mon Jun  6 17:32:20 2016
-// last saved: <2016-July-28 19:17:25>
+// last saved: <2016-December-23 09:30:25>
 
 (function (globalScope){
   var util = require('util'),
@@ -41,7 +41,7 @@
 
   function usergridAuth(baasConn, fn) {
     var ugClient, ugConfig = {
-          URI : baasConn.URI || 'https://api.usergrid.com',
+          URI : baasConn.URI || 'https://apibaas-trial.apigee.net', // 'https://api.usergrid.com'
           orgName: baasConn.org,
           appName: baasConn.app,
           buildCurl: baasConn.buildCurl,

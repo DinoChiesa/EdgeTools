@@ -10,7 +10,6 @@ In particular, these tools are handy for loading the hospitality data into any U
 
 
 
-
 ## Before you run
 
 You must use `npm install` to get the necessary pre-requisites.
@@ -27,7 +26,7 @@ For either script there are some data you must supply.
 
 * organization
 * application
-* Usergrid/BaaS endpoint (Defaults to https://api.usergrid.com)
+* Usergrid/BaaS endpoint (defaults to xxx, Previously defaulted to https://api.usergrid.com)
 * credentials - either user creds or client creds for the app
 
 Also, if running the deleteAllItems, you must specify the collection name from which to delete all items. 
@@ -36,11 +35,15 @@ You can specify all of these things as command-line options. Or, you can specify
 
 Example commmand, specifying all options, using client credentials:
 
-```node ./deleteAllItems.js -o amer-partner7 -a myapp1 -i YYYAZZJDJD -s YkjakajksjksE8 \ 
-     -v -e https://amer-apibaas-prod.apigee.net/appservices/ -C hotels```
+```sh
+node ./deleteAllItems.js -o amer-partner7 -a myapp1 -i YYYAZZJDJD -s YkjakajksjksE8 \ 
+     -v -e https://amer-apibaas-prod.apigee.net/appservices/ -C hotels
+```
 
 Example command specifying a configuration file:
-```node ./deleteAllItems.js -c config/real-config.json```
+```sh
+node ./deleteAllItems.js -c config/real-config.json
+```
 
 The configuration file must have contents like so:
 
@@ -84,7 +87,8 @@ There is a tool to export a single collection here.  It is called exportAllItems
 It's naive: it does not export connections or relationships. 
 
 Example command specifying a configuration file:
-```
+
+```sh
 node ./exportAllItems.js -c config/real-config.json -f my-collection-export.json
 ```
 
@@ -93,8 +97,17 @@ You could use this coupled with the loader to migrate a collection of data from 
 
 ## Loading Data 
 
-It reads all the JSON files in the data directory and loads them into the specified BaaS application.
+The loader.js tool reads all the JSON files in the data directory and
+loads them into the specified API BaaS application.
 
-```
+
+```sh
 node ./loader.js -o dino -a workshop -i YXsjhsiXoFUyEeaVzhg -s YXA653alN5kddd5k 
 ```
+
+or,
+
+```sh
+node ./loader.js -c config/real-config.json
+```
+
