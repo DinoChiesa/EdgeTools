@@ -6,7 +6,7 @@
 // Load JSON collections into an API BaaS organization + app.
 //
 // created: Thu Feb  5 19:29:44 2015
-// last saved: <2016-July-28 19:41:01>
+// last saved: <2016-December-23 12:29:15>
 
 var fs = require('fs'),
     path = require('path'),
@@ -27,9 +27,11 @@ var fs = require('fs'),
       ['a' , 'app=ARG', 'the Usergrid/BaaS application.'],
       ['u' , 'username=ARG', 'app user with permissions to create collections. (only if not using client creds!)'],
       ['p' , 'password=ARG', 'password for the app user.'],
-      ['i' , 'clientid=ARG', 'clientid for the Usergrid/Baas app. (only if not using user creds!)'],
+      ['i' , 'clientid=ARG', 'clientid for the Baas app. (only if not using user creds!)'],
       ['s' , 'clientsecret=ARG', 'clientsecret for the clientid.'],
-      ['e' ,  'endpoint=ARG', 'the BaaS endpoint (if not api.usergrid.com)'],
+      ['e' , 'endpoint=ARG', 'the BaaS endpoint (if not https://apibaas-trial.apigee.net)'],
+      ['A' , 'anonymous', 'connect to BaaS anonymously. In lieu of user+pw or client id+secret.'],
+      ['F' , 'file=ARG', 'upload just THIS .json file'],
       ['v' , 'verbose'],
       ['h' , 'help']
     ]).bindHelp();
@@ -162,15 +164,17 @@ function main(args) {
       }
       fs.readdir(dataDir, function (err,files){
         files.forEach(function(filename) {
-          if (filename.indexOf('.json') > 0) {
-            var shortname = filename.split('.json')[0];
-            console.log('uploading ' + shortname);
-            var data = JSON.parse(fs.readFileSync(path.join(dataDir, filename), 'utf8'));
-            doUploadWork(ugClient, shortname, data, function(e) {
-              var endTime = new Date(), value = endTime - startTime;
-              common.logWrite('finis');
-              common.logWrite('elapsed %d: %s', value, common.elapsedToHHMMSS(value));
-            });
+          if (filename.endsWith('.json')) {
+            if ( ! opt.options.file || opt.options.file == filename) {
+              var shortname = filename.split('.json')[0];
+              console.log('uploading ' + shortname);
+              var data = JSON.parse(fs.readFileSync(path.join(dataDir, filename), 'utf8'));
+              doUploadWork(ugClient, shortname, data, function(e) {
+                var endTime = new Date(), value = endTime - startTime;
+                common.logWrite('finis');
+                common.logWrite('elapsed %d: %s', value, common.elapsedToHHMMSS(value));
+              });
+            }
           }
         });
       });

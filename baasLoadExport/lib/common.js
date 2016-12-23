@@ -4,7 +4,7 @@
 // common functions used by the loader, exportAllItems, and deleteAllItems scripts.
 //
 // created: Mon Jun  6 17:32:20 2016
-// last saved: <2016-December-23 09:30:25>
+// last saved: <2016-December-23 12:26:03>
 
 (function (globalScope){
   var util = require('util'),
@@ -70,7 +70,9 @@
       fn(null, new usergrid.client(ugConfig));
     }
     else {
-      fn({error: "missing credentials"});
+      ugConfig.authType = usergrid.NONE;
+      fn(null, new usergrid.client(ugConfig));
+      // fn({error: "missing credentials"});
     }
   }
 
@@ -78,7 +80,19 @@
     var baasConn;
 
     if (opt.options.config) {
-      baasConn = JSON.parse(fs.readFileSync(opt.options.config, 'utf8'));
+      var moreOptions = JSON.parse(fs.readFileSync(opt.options.config, 'utf8'));
+      baasConn = {};
+      Object.keys(moreOptions).forEach(function(key){
+        opt.options[key] = moreOptions[key];
+        if (key != 'verbose' && key != 'file') {
+          baasConn[key] = moreOptions[key];
+        }
+      });
+      baasConn.wantLogging = opt.options.verbose;
+      baasConn.buildCurl = opt.options.superverbose;
+      if (opt.options.endpoint) {
+        baasConn.URI = opt.options.endpoint; // eg, https://amer-apibaas-prod.apigee.net/appservices/
+      }
     }
     else {
       baasConn = {};
@@ -117,11 +131,13 @@
       process.exit(1);
     }
 
-    if ( ! ((baasConn.clientid && baasConn.clientsecret) ||
-            (baasConn.username && baasConn.password))) {
-      console.log('must supply username+password -or- clientid+clientsecret');
-      if (getopt) { getopt.showHelp(); }
-      process.exit(1);
+    if ( ! opt.options.anonymous) {
+      if ( !(baasConn.clientid && baasConn.clientsecret) &&
+           !(baasConn.username && baasConn.password)) {
+        console.log('must supply username+password -or- clientid+clientsecret, or specify --anonymous');
+        if (getopt) { getopt.showHelp(); }
+        process.exit(1);
+      }
     }
     return baasConn;
   }

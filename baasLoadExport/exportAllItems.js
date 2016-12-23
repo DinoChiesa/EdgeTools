@@ -6,7 +6,7 @@
 // Demonstrate how to iteratively export all items in a BaaS collection.
 //
 // created: Mon Feb  9 11:18:18 2015
-// last saved: <2016-July-28 19:18:01>
+// last saved: <2016-December-23 11:56:04>
 
 var fs = require('fs'),
     util = require('util'),
@@ -25,8 +25,9 @@ var fs = require('fs'),
       ['p' , 'password=ARG', 'password for the app user.'],
       ['i' , 'clientid=ARG', 'clientid for the Usergrid/Baas app. (only if not using user creds!)'],
       ['s' , 'clientsecret=ARG', 'clientsecret for the clientid.'],
-      ['e' , 'endpoint=ARG', 'the BaaS endpoint (if not api.usergrid.com)'],
+      ['e' , 'endpoint=ARG', 'the BaaS endpoint (if not https://apibaas-trial.apigee.net)'],
       ['f' , 'file=ARG', 'output file to hold the exported data. Should be writable.'],
+      ['A' , 'anonymous', 'connect to BaaS anonymously. In lieu of user+pw or client id+secret.'],
       ['v' , 'verbose'],
       ['V' , 'superverbose'],
       ['h' , 'help']
@@ -105,6 +106,7 @@ function main(args) {
       });
     }
     else {
+      console.log('specify Collection and file.');
       getopt.showHelp();
     }
 
