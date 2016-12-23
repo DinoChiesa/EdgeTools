@@ -1,13 +1,13 @@
 # loader for Baas Hospitality data
 
-This project lets you load data into usergrid (also known as "BaaS"), or remove data from BaaS. Any data.
+This project lets you load data into usergrid (also known as "BaaS"), or export data from BaaS, or remove data from BaaS. Any data.
 
-There are two scripts:
-* loader.js - loads data into usergrid
-* deleteAllItems.js -deletes the data from a collection when you are finished with it.
+There are three scripts:
+* loader.js - loads data into BaaS
+* exportAllItems.js - export data from BaaS
+* deleteAllItems.js - deletes the data from a collection. 
 
 In particular, these tools are handy for loading the hospitality data into any Usergrid organization and application. They could also be used for other data and other collections. 
-
 
 
 ## Before you run
@@ -22,11 +22,11 @@ In this repo, there is a hotels.json file. Running the loader will thus create a
 
 ## Configuring 
 
-For either script there are some data you must supply.
+For any of the scripts there are some data you must supply.
 
 * organization
 * application
-* Usergrid/BaaS endpoint (defaults to xxx, Previously defaulted to https://api.usergrid.com)
+* Usergrid/BaaS endpoint (defaults to https://apibaas-trial.apigee.net ; this previously defaulted to https://api.usergrid.com)
 * credentials - either user creds or client creds for the app
 
 Also, if running the deleteAllItems, you must specify the collection name from which to delete all items. 
@@ -64,7 +64,7 @@ You can find the client id and secret in the Usergrid/BaaS Admin UI for your app
 
 
 
-Or, for user credentials, with the Usergrid API endpoint (which is the default):
+Or, for user credentials, with the BaaS trial API endpoint (https://apibaas-trial.apigee.net , which is the default):
 
 ```json
 {
@@ -77,13 +77,13 @@ Or, for user credentials, with the Usergrid API endpoint (which is the default):
 }
 ```
 
-Notice, no URI property there.  To authenticate with user credentials,  you must have created a user in your Usergrid application.  Do this via the usergrid Admin UI. 
+Notice, no URI property there.  To authenticate with user credentials,  you must have created a user in your API BaaS application.  Do this via the API BaaS Admin UI. 
 
 
 
 ## Exporting Baas Data
 
-There is a tool to export a single collection here.  It is called exportAllItems.js.
+The exportAllItems.js. tool will export dat from a single collection.
 It's naive: it does not export connections or relationships. 
 
 Example command specifying a configuration file:
