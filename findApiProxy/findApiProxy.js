@@ -1,15 +1,13 @@
-#! /usr/local/bin/node
-/*jslint node:true */
-// findApiKey.js
+// findApiProxy.js
 // ------------------------------------------------------------------
-// find the developer and app name for an API key from an Edge org.
 //
-// last saved: <2017-March-20 10:28:38>
+// created: Mon Mar 20 09:57:02 2017
+// last saved: <2017-March-20 10:30:57>
 
 var request = require('request'),
     readlineSync = require('readline-sync'),
     Getopt = require('node-getopt'),
-    version = '20160427-1842',
+    version = '20170320-1030',
     netrc = require('netrc')(),
     mgmtUrl,
     getopt = new Getopt([
@@ -18,7 +16,7 @@ var request = require('request'),
       ['p' , 'password=ARG', 'password for the org user.'],
       ['n' , 'netrc', 'retrieve the username + password from the .netrc file. In lieu of -u/-p'],
       ['o' , 'org=ARG', 'the Edge organization.'],
-      ['k' , 'key=ARG', 'the key to find.'],
+      ['P' , 'proxy=ARG', 'the proxy to find.'],
       ['v' , 'verbose'],
       ['h' , 'help']
     ]).bindHelp();
@@ -96,8 +94,8 @@ if ( !opt.options.org ) {
   process.exit(1);
 }
 
-if ( !opt.options.key ) {
-  console.log('You must specify a key to find');
+if ( !opt.options.proxy ) {
+  console.log('You must specify a proxy to find');
   getopt.showHelp();
   process.exit(1);
 }
@@ -112,7 +110,7 @@ var gRequestOptions = {
 
 var gUrlBase = joinUrlElements(opt.options.mgmtserver, '/v1/o/', opt.options.org);
 
-var url = joinUrlElements(gUrlBase, 'apps?expand=true');
+var url = joinUrlElements(gUrlBase, 'apiproducts?expand=true');
 
 edgeGet(url, function(e, result) {
   var found = null;
@@ -120,22 +118,17 @@ edgeGet(url, function(e, result) {
     console.log(e.stack);
     process.exit(1);
   }
-  result.app.forEach(function(app) {
-    if ( !found && app.credentials) app.credentials.forEach(function(cred){
-      if ( !found && cred.consumerKey == opt.options.key) { found = {app:app, cred:cred}; }
-    });
-  });
 
-  if (found) {
-    url = joinUrlElements(gUrlBase, 'developers', found.app.developerId);
-    edgeGet(url, function(e, result){
-      console.log('key: ' + opt.options.key);
-      console.log('app: ' + found.app.name + ' ' + found.app.appId);
-      console.log('dev: ' + found.app.developerId + ' ' +
-                  result.firstName + ' ' +
-                  result.lastName + ' ' +
-                  result.userName + ' ' +
-                  result.email);
-    });
+  var apiproducts = result.apiProduct;
+  console.log('count of products: %d', apiproducts.length);
+  var filtered = apiproducts.filter(function(product) {
+        return (product.proxies.indexOf(opt.options.proxy) >= 0);
+      });
+
+  if (filtered) {
+    console.log('count of products containing %s: %d', opt.options.proxy, filtered.length);
+    if (filtered.length) {
+      console.log(JSON.stringify(filtered));
+    }
   }
 });

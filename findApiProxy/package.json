@@ -1,17 +1,17 @@
 {
-  "name": "edge-api-key-finder",
+  "name": "edge-api-proxy-finder",
   "version": "0.1.0",
-  "description": "Tool that finds an API key in an organization",
-  "main": "findApiKey.js",
+  "description": "Tool that find the API Products that contain an API Proxy",
+  "main": "findApiProxy.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "dchiesa@google.com",
   "license": "Apache-2.0",
   "dependencies": {
-    "netrc": "^0.1.3",
-    "node-getopt": "^0.2.3",
+    "netrc": "0.1.3",
+    "node-getopt": "0.2.3",
     "readline-sync": "^1.4.1",
-    "request": "^2.53.0"
+    "request": "2.53.0"
   }
 }

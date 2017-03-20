@@ -4,7 +4,7 @@
 // common functions used by the loader, exportAllItems, and deleteAllItems scripts.
 //
 // created: Mon Jun  6 17:32:20 2016
-// last saved: <2016-December-23 12:26:03>
+// last saved: <2016-December-30 13:12:35>
 
 (function (globalScope){
   var util = require('util'),
@@ -205,10 +205,10 @@
 
 
   module.exports = {
-    logWrite : logWrite,
-    elapsedToHHMMSS : elapsedToHHMMSS,
-    usergridAuth : usergridAuth,
-    processOptions : processOptions,
+    logWrite            : logWrite,
+    elapsedToHHMMSS     : elapsedToHHMMSS,
+    usergridAuth        : usergridAuth,
+    processOptions      : processOptions,
     ugCollectionForEach : ugCollectionForEach
   };
 
