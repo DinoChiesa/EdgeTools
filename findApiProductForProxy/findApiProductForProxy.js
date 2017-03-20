@@ -1,13 +1,13 @@
-// findApiProxy.js
+// findApiProductForProxy.js
 // ------------------------------------------------------------------
 //
 // created: Mon Mar 20 09:57:02 2017
-// last saved: <2017-March-20 10:30:57>
+// last saved: <2017-March-20 11:15:02>
 
 var request = require('request'),
     readlineSync = require('readline-sync'),
     Getopt = require('node-getopt'),
-    version = '20170320-1030',
+    version = '20170320-1114',
     netrc = require('netrc')(),
     mgmtUrl,
     getopt = new Getopt([
@@ -51,7 +51,7 @@ function edgeGet(url, cb) {
 // ========================================================
 
 console.log(
-  'Edge API key finder, version: ' + version + '\n' +
+  'Edge API-Product-for-proxy finder, version: ' + version + '\n' +
     'Node.js ' + process.version + '\n');
 
 // process.argv array starts with 'node' and 'scriptname.js'

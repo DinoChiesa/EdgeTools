@@ -1,8 +1,8 @@
 {
-  "name": "edge-api-proxy-finder",
+  "name": "edge-api-product-for-proxy-finder",
   "version": "0.1.0",
-  "description": "Tool that find the API Products that contain an API Proxy",
-  "main": "findApiProxy.js",
+  "description": "Tool that finds the API Products that contain an API Proxy",
+  "main": "findApiProductForProxy.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
