@@ -6,7 +6,7 @@
 # Licensed under the Apache 2.0 source license. See the LICENSE file accompanying this script. 
 #
 # Created: <Thu Jun  9 15:25:53 2016>
-# Last Updated: <2016-June-09 16:02:51>
+# Last Updated: <2017-March-27 14:22:37>
 #
 
 verbosity=1
@@ -18,7 +18,7 @@ credentials=""
 numre='^[0-9]+$'
 TAB=$'\t'
 
-function usage() {
+usage() {
   local CMD=`basename $0`
   echo "$CMD: "
   echo "  Produces a diff of two revisions of an API proxy in Apigee Edge."
@@ -49,7 +49,7 @@ function usage() {
 ##    env var is not set prior to calling this function, it is created
 ##    and the name of a tmp file in /tmp is placed there.
 ## 2. puts curl http_status into variable CURL_RC
-function MYCURL() {
+MYCURL() {
   [ -z "${CURL_OUT}" ] && CURL_OUT=`mktemp /tmp/apigee-multirev-demo.curl.out.XXXXXX`
   [ -f "${CURL_OUT}" ] && rm ${CURL_OUT}
   [ $verbosity -gt 0 ] && echo "curl $@"
@@ -59,12 +59,12 @@ function MYCURL() {
 }
 
 
-function CleanUp() {
+CleanUp() {
   [ -f ${CURL_OUT} ] && rm -rf ${CURL_OUT}
   [ -d ${TMP_DIFF_DIR} ] && rm -rf ${TMP_DIFF_DIR}
 }
 
-function choose_mgmtserver() {
+choose_mgmtserver() {
   local name
   echo
   read -p "  Which mgmt server (${defaultmgmtserver}) :: " name
@@ -74,7 +74,7 @@ function choose_mgmtserver() {
 }
 
 
-function verify_numeric() {
+verify_numeric() {
     local num=$1 label=$2
     if ! [[ $num =~ $numre ]] ; then
         echo "error: $label is not a number" >&2
@@ -90,7 +90,7 @@ function verify_numeric() {
     fi
 }
 
-function verify_revisions() {
+verify_revisions() {
     local num_revs=${#revisions[@]}
     local i rev
     if [ $num_revs -ne 2 ] ; then
@@ -105,7 +105,7 @@ function verify_revisions() {
     done
 }
 
-function choose_credentials() {
+choose_credentials() {
   local username password
 
   read -p "username for Edge org ${orgname} at ${mgmtserver} ? (blank to use .netrc): " username
@@ -121,7 +121,7 @@ function choose_credentials() {
 }
 
 
-function maybe_ask_password() {
+maybe_ask_password() {
   local password
   if [[ ${credentials} =~ ":" ]]; then
     credentials="-u ${credentials}"
@@ -134,7 +134,7 @@ function maybe_ask_password() {
 }
 
 
-function check_org() {
+check_org() {
   echo "  checking org ${orgname}..."
   MYCURL -X GET  ${mgmtserver}/v1/o/${orgname}
   if [ ${CURL_RC} -eq 200 ]; then
@@ -144,7 +144,7 @@ function check_org() {
   fi
 }
 
-function export_proxy_revisions() {
+export_proxy_revisions() {
     local rev original_dir diff_cmd_string=""
     [ -z "${TMP_DIFF_DIR}" ] && TMP_DIFF_DIR=`mktemp -d /tmp/apigee-proxy-diff.XXXXXX`
     original_dir=${PWD}

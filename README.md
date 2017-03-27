@@ -90,6 +90,12 @@ terminate at a load balancer.  In which case, this tool does not apply, and you 
 contact Apigee Support directly.
 
 
+## Find KVM Access
+
+The [findKvmAccess](findKvmAccess) tool examines all the API proxies in an Edge organization, for policies that access the KVM.  It reports the matching policies .
+
+
+
 # Notes
 
 These tools are built in nodejs, and in bash. 
