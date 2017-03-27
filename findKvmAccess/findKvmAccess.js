@@ -4,7 +4,7 @@
 // ------------------------------------------------------------------
 // provision a developer in Apigee Edge
 //
-// last saved: <2017-March-27 12:41:18>
+// last saved: <2017-March-27 12:52:41>
 
 var fs = require('fs'),
     async = require('async'),
@@ -13,9 +13,10 @@ var fs = require('fs'),
     apigeeEdge = edgejs.edge,
     sprintf = require('sprintf-js').sprintf,
     Getopt = require('node-getopt'),
-    version = '20170324-1542',
+    version = '20170327-1252',
     getopt = new Getopt(common.commonOptions.concat([
-      ['M' , 'kvm=ARG', 'Optional. KVM name to check for.']
+      ['M' , 'kvm=ARG', 'Optional. KVM name to find.'],
+      ['S' , 'scope=ARG', 'Optional. Scope to match. Should be one of: (organization, environment, apiproxy)']
     ])).bindHelp();
 
 // ========================================================
@@ -43,7 +44,8 @@ function examineOnePolicy(policyUrl) {
       handleError(e);
       // return true if KVM and if the mapIdentifier is as specified
       var boolResult = (result.policyType == 'KeyValueMapOperations') &&
-        ( ! opt.options.kvm || (opt.options.kvm == result.mapIdentifier));
+        ( ! opt.options.kvm || ((opt.options.kvm == result.mapIdentifier) &&
+                                ( ! opt.options.scope || (opt.options.scope == result.scope))));
       callback(null, boolResult);
     });
   };
