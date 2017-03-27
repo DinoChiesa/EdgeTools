@@ -3,13 +3,20 @@
   "version": "0.1.0",
   "description": "Tool to find Kvm Access within proxies in an org in Apigee Edge",
   "main": "findKvmAccess.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/DinoChiesa/EdgeTools.git"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "dchiesa@google.com",
   "license": "Apache-2.0",
+  "not-dependencies" : {
+    "apigee-edge-js": "git://github.com/DinoChiesa/apigee-edge-js.git"
+  },
   "dependencies": {
-    "apigee-edge-js": "git://github.com/DinoChiesa/apigee-edge-js.git",
+    "apigee-edge-js": "^0.1.5",
     "async": "^2.2.0",
     "node-getopt": "0.2.3"
   }
