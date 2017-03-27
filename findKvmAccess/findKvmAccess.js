@@ -1,10 +1,10 @@
 #! /usr/local/bin/node
 /*jslint node:true */
-// createDeveloper.js
+// findKvmAccess.js
 // ------------------------------------------------------------------
-// provision a developer in Apigee Edge
+// in Apigee Edge, find all policies in all proxies that reference a KVM
 //
-// last saved: <2017-March-27 12:52:41>
+// last saved: <2017-March-27 14:20:23>
 
 var fs = require('fs'),
     async = require('async'),
