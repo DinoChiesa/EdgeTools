@@ -4,7 +4,7 @@
 // ------------------------------------------------------------------
 // in Apigee Edge, find all policies in all proxies that reference a KVM
 //
-// last saved: <2017-March-27 14:20:23>
+// last saved: <2017-March-27 15:03:14>
 
 var fs = require('fs'),
     async = require('async'),
@@ -102,7 +102,12 @@ apigeeEdge.connect(options, function(e, result){
     console.log(e.stack);
     process.exit(1);
   }
-  common.logWrite('connected');
+  if (result.access_token) {
+    common.logWrite('connected with OAuth2 token');
+  }
+  else {
+    common.logWrite('connected');
+  }
 
   apigeeEdge.getProxy({}, function(e, result){
     if (e) {
