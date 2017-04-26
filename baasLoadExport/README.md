@@ -14,10 +14,43 @@ In particular, these tools are handy for loading the hospitality data into any U
 
 You must use `npm install` to get the necessary pre-requisites.
 
-## The data
 
-Loading data always loads from the data directory.
-In this repo, there is a hotels.json file. Running the loader will thus create a hotels collection and fill it with data from the data/hotels.json file .
+## Points of Interest
+
+The loader.js script implements a monkeypatch of the usergrid library, to insert a batchCreate method.  This allows you to create a batch of N entities at a time,
+which simplifies coding significantly. For example: 
+
+```js
+function doUploadWork (ugClient, collectionName, data, cb) {
+  toBatches(data) // produce an array of arrays, each inner array one batch size (100-ish?)
+    .reduce(function(promise, batch) {
+      return promise.then(function() {
+        var d = q.defer();
+        ugClient.batchCreate(collectionName, batch, function (e, entities) {
+           d.resolve({});
+        });
+        return d.promise;
+      });
+    }, q({}))
+    .then(function () {
+      cb(null);
+    }, function(e) {
+      cb(e);
+    });
+}
+
+```
+
+
+## Where's the data?
+
+The loader.js script always looks for data to load, in the data directory.
+In this repo, there is a hotels.json file there. Running the loader.js will thus create a hotels collection in the BaaS org you specify, and will fill it with data from the data/hotels.json file .
+
+You could insert your own data there to load *that*. For example, a typical workflow mighrt be:
+
+# use exportAllItems.js to export data from org1 into the data dir
+# use the loader.js to to import that data into org2
 
 
 ## Configuring 
@@ -33,7 +66,25 @@ Also, if running the deleteAllItems, you must specify the collection name from w
 
 You can specify all of these things as command-line options. Or, you can specify them in a configuration file, like so: 
 
-Example commmand, specifying all options, using client credentials:
+Example help:
+```sh
+Usage: node deleteAllItems.js
+
+  -c, --config=ARG        the configuration json file, which contains Usergrid/Baas org, app, and credentials
+  -o, --org=ARG           the Usergrid/BaaS organization.
+  -a, --app=ARG           the Usergrid/BaaS application.
+  -C, --collection=ARG    the Usergrid/BaaS collection from which to remove all items.
+  -u, --username=ARG      app user with permissions to create collections. (only if not using client creds!)
+  -p, --password=ARG      password for the app user.
+  -i, --clientid=ARG      clientid for the Usergrid/Baas app. (only if not using user creds!)
+  -s, --clientsecret=ARG  clientsecret for the clientid.
+  -e, --endpoint=ARG      the BaaS endpoint (if not api.usergrid.com)
+  -v, --verbose           
+  -V, --superverbose      
+  -h, --help              
+```
+
+Example commmand, specifying all necessary options, using client credentials:
 
 ```sh
 node ./deleteAllItems.js -o amer-partner7 -a myapp1 -i YYYAZZJDJD -s YkjakajksjksE8 \ 
