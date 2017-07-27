@@ -4,7 +4,7 @@
 // ------------------------------------------------------------------
 // in Apigee Edge, find all policies in all proxies that reference a KVM
 //
-// last saved: <2017-March-27 15:03:14>
+// last saved: <2017-July-27 11:50:48>
 
 var fs = require('fs'),
     async = require('async'),
@@ -13,7 +13,8 @@ var fs = require('fs'),
     apigeeEdge = edgejs.edge,
     sprintf = require('sprintf-js').sprintf,
     Getopt = require('node-getopt'),
-    version = '20170327-1252',
+    merge = require('merge'),
+    version = '20170727-1150',
     getopt = new Getopt(common.commonOptions.concat([
       ['M' , 'kvm=ARG', 'Optional. KVM name to find.'],
       ['S' , 'scope=ARG', 'Optional. Scope to match. Should be one of: (organization, environment, apiproxy)']
@@ -38,9 +39,9 @@ function handleError(e) {
     }
 }
 
-function examineOnePolicy(policyUrl) {
+function examineOnePolicy(org, options) {
   return function(policyName, callback) {
-    apigeeEdge.get(sprintf('%s/%s', policyUrl, policyName), function(e, result) {
+    org.proxies.getPoliciesForRevision(merge(options, {policy:policyName}), function(e, result) {
       handleError(e);
       // return true if KVM and if the mapIdentifier is as specified
       var boolResult = (result.policyType == 'KeyValueMapOperations') &&
@@ -51,13 +52,13 @@ function examineOnePolicy(policyUrl) {
   };
 }
 
-function getOneRevision (proxyName) {
+function getOneRevision (org, proxyName) {
   return function (revision, callback) {
-    var url = sprintf('apis/%s/revisions/%s/policies', proxyName, revision);
-    apigeeEdge.get(url, function(e, result){
-      async.filterSeries(result, examineOnePolicy(url), function(err, results) {
+    var options = {name:proxyName, revision:revision};
+    org.proxies.getPoliciesForRevision(options, function(e, result){
+      async.filterSeries(result, examineOnePolicy(org, options), function(err, results) {
         // results now equals an array of the KVM policies in this revision
-        callback(null, results.map(function(elt){ return sprintf('%s/%s', url, elt); }));
+        callback(null, results.map(function(elt){ return sprintf('apis/%s/revisions/%s/policies/%s', proxyName, revision, elt); }));
       });
     });
   };
@@ -79,12 +80,15 @@ function doneAllProxies(e, results) {
   common.logWrite('matching KVM policies: ' + JSON.stringify(flattened));
 }
 
-function analyzeOneProxy(proxyName, callback) {
-  apigeeEdge.getProxy({ proxy : proxyName }, function(e, result){
-    handleError(e);
-    async.mapSeries(result.revision, getOneRevision(proxyName), doneAllRevisions(proxyName, callback));
-  });
+function analyzeOneProxy(org) {
+  return function(proxyName, callback) {
+    org.proxies.get({ name: proxyName }, function(e, result){
+      handleError(e);
+      async.mapSeries(result.revision, getOneRevision(org, proxyName), doneAllRevisions(proxyName, callback));
+    });
+  };
 }
+
 
 common.verifyCommonRequiredParameters(opt.options, getopt);
 
@@ -93,28 +97,16 @@ var options = {
       org : opt.options.org,
       user: opt.options.username,
       password: opt.options.password,
-      quiet : true
+      verbosity: opt.options.verbose || 0
     };
 
-apigeeEdge.connect(options, function(e, result){
+apigeeEdge.connect(options, function(e, org){
   if (e) {
-    console.log(e);
-    console.log(e.stack);
+    common.logWrite(JSON.stringify(e, null, 2));
+    //console.log(e.stack);
     process.exit(1);
   }
-  if (result.access_token) {
-    common.logWrite('connected with OAuth2 token');
-  }
-  else {
-    common.logWrite('connected');
-  }
-
-  apigeeEdge.getProxy({}, function(e, result){
-    if (e) {
-      console.log(e);
-      console.log(e.stack);
-      process.exit(1);
-    }
-    async.mapSeries(result, analyzeOneProxy, doneAllProxies);
+  org.proxies.get({}, function(e, proxies) {
+    async.mapSeries(proxies, analyzeOneProxy(org), doneAllProxies);
   });
 });
