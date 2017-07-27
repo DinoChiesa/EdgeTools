@@ -2,14 +2,14 @@
   "name": "edge-bulk-api-exporter",
   "version": "0.1.1",
   "description": "Tool that exports all revisions of all API proxies from an Edge org",
-  "main": "bulkExportApis2.js",
+  "main": "bulkExportApis.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "dchiesa@apigee.com",
   "license": "MIT",
   "dependencies": {
-    "apigee-edge-js": "^0.2.9",
+    "apigee-edge-js": "^0.2.11",
     "async": "^0.9.2",
     "node-getopt": "0.2.3"
   }
