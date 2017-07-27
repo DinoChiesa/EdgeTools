@@ -7,7 +7,7 @@
 //
 // This tool does not examine environment-wide or organization-wide resources.
 //
-// last saved: <2017-July-27 11:34:34>
+// last saved: <2017-July-27 11:50:57>
 
 var fs = require('fs'),
     async = require('async'),
@@ -17,7 +17,7 @@ var fs = require('fs'),
     sprintf = require('sprintf-js').sprintf,
     Getopt = require('node-getopt'),
     merge = require('merge'),
-    version = '20170410-1714',
+    version = '20170727-1150',
     gRegexp,
     getopt = new Getopt(common.commonOptions.concat([
       ['J' , 'jar=ARG', 'Optional. JAR name to find. Default: search for all JavaCallout policies.'],
