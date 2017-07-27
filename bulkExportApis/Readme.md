@@ -35,9 +35,19 @@ $ node bulkExportApis.js --username={{YOURAPIGEEEDGEEMAILADDRESS}} --password={{
 If you store credentials in .netrc, the tool can use them.  Do it like so:
 
 ```
-$ node bulkExportApis.js --netrc --org={{YOURAPIGEEEDGEORGNAME}} -v
+$ node bulkExportApis.js -n -org=ORGNAME -v
 
 ```
+
+You can export only those APIs with names matching a specific regex.  Like this: 
+
+```
+$ node bulkExportApis.js -n -org=ORGNAME -v -R ytd\*
+
+```
+
+And you can export only the latest revision of each API with -L.  These options compose; you can use -R and -L together. 
+
 
 
 By default, the tool uses "https://api.enterprise.apigee.com" as the
@@ -54,13 +64,11 @@ $ node bulkExportApis.js --mgmtserver=https://my-mgmt-server.com \
 
 ## How does it work?
 
-It's pretty simple.  This nodejs script uses the documented
-administrative APIs for Apigee Edge to call GET on the apiproxy
-entities. It's just a matter of mapping that operation to each revision
-of each proxy.
+It's pretty simple.  This nodejs script uses the apigee-edge-js
+node module to enumerate proxies and export them. 
 
 
 # License
 
-This material is copyright 2015,2016 Apigee Corporation. 
+This material is Copyright 2015,2016 Apigee Corporation. Copyright 2017 Google Inc.
 and is licensed under the Apache 2.0 license. See the [LICENSE](../LICENSE) file. 
