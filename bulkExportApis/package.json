@@ -10,7 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "apigee-edge-js": "^0.2.11",
-    "async": "^0.9.2",
+    "async": "^2.2.0",
     "node-getopt": "0.2.3"
   }
 }
