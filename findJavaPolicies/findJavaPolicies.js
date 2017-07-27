@@ -7,7 +7,7 @@
 //
 // This tool does not examine environment-wide or organization-wide resources.
 //
-// last saved: <2017-April-10 18:13:41>
+// last saved: <2017-July-27 11:34:34>
 
 var fs = require('fs'),
     async = require('async'),
@@ -16,10 +16,11 @@ var fs = require('fs'),
     apigeeEdge = edgejs.edge,
     sprintf = require('sprintf-js').sprintf,
     Getopt = require('node-getopt'),
+    merge = require('merge'),
     version = '20170410-1714',
     gRegexp,
     getopt = new Getopt(common.commonOptions.concat([
-      ['J' , 'jar=ARG', 'Optional. JAR name to find. Default: search for JavaCallout policies.'],
+      ['J' , 'jar=ARG', 'Optional. JAR name to find. Default: search for all JavaCallout policies.'],
       ['R' , 'regexp', 'Optional. Treat the -J option as a regexp. Default: perform string match.']
     ])).bindHelp();
 
@@ -42,9 +43,9 @@ function handleError(e) {
     }
 }
 
-function examineOnePolicy(policyUrl) {
+function examineOnePolicy(org, options) {
   return function(policyName, callback) {
-    apigeeEdge.get(sprintf('%s/%s', policyUrl, policyName), function(e, result) {
+    org.proxies.getPoliciesForRevision(merge(options, {policy:policyName}), function(e, result) {
       handleError(e);
       var boolResult = (result.policyType == 'JavaCallout');
       callback(null, boolResult);
@@ -52,15 +53,15 @@ function examineOnePolicy(policyUrl) {
   };
 }
 
-function getOneRevision (proxyName) {
+function getOneRevision (org, proxyName) {
   return function (revision, callback) {
-    var url, regexp;
+    var options = {name:proxyName, revision:revision};
     if ( opt.options.jar ) {
-      url = sprintf('apis/%s/revisions/%s/resources', proxyName, revision);
+      // url = sprintf('apis/%s/revisions/%s/resources', proxyName, revision);
       if (opt.options.regexp && !gRegexp) {
         gRegexp = new RegExp(opt.options.jar);
       }
-      apigeeEdge.get(url, function(e, result){
+      org.proxies.getResourcesForRevision.get(options, function(e, result){
         if (e) {
           return callback(null, null);
         }
@@ -74,13 +75,13 @@ function getOneRevision (proxyName) {
       });
     }
     else {
-      url = sprintf('apis/%s/revisions/%s/policies', proxyName, revision);
-      apigeeEdge.get(url, function(e, result){
+      //url = sprintf('apis/%s/revisions/%s/policies', proxyName, revision);
+      org.proxies.getPoliciesForRevision(options, function(e, result){
         if (e) {
-          return callback(null, []);
+          return callback(e, []);
         }
-        async.filterSeries(result, examineOnePolicy(url), function(err, results) {
-          var javaPolicies = results.map(function(elt){ return sprintf('%s/%s', url, elt); });
+        async.filterSeries(result, examineOnePolicy(org, options), function(err, results) {
+          var javaPolicies = results.map(function(elt){ return sprintf('apis/%s/revisions/%s/policies/%s', proxyName, revision, elt); });
           callback(null, javaPolicies);
         });
       });
@@ -115,12 +116,16 @@ function doneAllProxies(e, results) {
 }
 
 
-function analyzeOneProxy(proxyName, callback) {
-  apigeeEdge.getProxy({ proxy : proxyName }, function(e, result){
+function analyzeOneProxy(org) {
+
+return function(proxyName, callback) {
+  org.proxies.get({ name: proxyName }, function(e, result) {
     handleError(e);
-    async.mapSeries(result.revision, getOneRevision(proxyName), doneAllRevisions(proxyName, callback));
+    async.mapSeries(result.revision, getOneRevision(org, proxyName), doneAllRevisions(proxyName, callback));
   });
+};
 }
+
 
 common.verifyCommonRequiredParameters(opt.options, getopt);
 
@@ -129,29 +134,18 @@ var options = {
       org : opt.options.org,
       user: opt.options.username,
       password: opt.options.password,
-      quiet : true
+      verbosity: opt.options.verbose || 0
     };
 
-apigeeEdge.connect(options, function(e, result){
+apigeeEdge.connect(options, function(e, org){
   if (e) {
-    console.log(e);
-    console.log(e.stack);
+    common.logWrite(JSON.stringify(e, null, 2));
+    //console.log(e.stack);
     process.exit(1);
   }
-  if (result.access_token) {
-    common.logWrite('connected with OAuth2 token');
-  }
-  else {
-    common.logWrite('connected');
-  }
 
-  apigeeEdge.getProxy({}, function(e, result){
-    if (e) {
-      console.log(e);
-      console.log(e.stack);
-      process.exit(1);
-    }
-    async.mapSeries(result, analyzeOneProxy, doneAllProxies);
+  org.proxies.get({}, function(e, proxies) {
+    async.mapSeries(proxies, analyzeOneProxy(org), doneAllProxies);
   });
 
 });

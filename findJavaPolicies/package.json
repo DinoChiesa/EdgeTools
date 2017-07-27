@@ -1,8 +1,8 @@
 {
-  "name": "findJwtPolicies-apigee-edge-tools",
-  "version": "0.1.0",
-  "description": "Tool to find JWT policies within proxies in an org in Apigee Edge",
-  "main": "findJwtPolicies.js",
+  "name": "findJavaPolicies-apigee-edge-tools",
+  "version": "0.1.1",
+  "description": "Tool to find Java policies within proxies in an org in Apigee Edge",
+  "main": "findJavaPolicies.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/DinoChiesa/EdgeTools.git"
@@ -16,8 +16,9 @@
     "apigee-edge-js": "git://github.com/DinoChiesa/apigee-edge-js.git"
   },
   "dependencies": {
-    "apigee-edge-js": "^0.1.5",
+    "apigee-edge-js": "^0.2.12",
     "async": "^2.2.0",
-    "node-getopt": "0.2.3"
+    "node-getopt": "0.2.3",
+    "merge": "^1.2.0"
   }
 }
