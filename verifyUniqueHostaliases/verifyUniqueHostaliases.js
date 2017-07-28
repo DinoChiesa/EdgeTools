@@ -4,7 +4,7 @@
 // ------------------------------------------------------------------
 // In Apigee Edge, verify that hostaliases are unique across all vhosts in all orgs.
 //
-// last saved: <2017-July-27 17:36:27>
+// last saved: <2017-July-27 17:45:41>
 
 var fs = require('fs'),
     async = require('async'),
@@ -40,26 +40,32 @@ function handleError(e) {
 
 
 function performUniquenessAnalysis(results) {
-  var hash = {};
+  var exists = {}, errors = {};
   results.forEach(function(result){
     var envmap = result.results;
     Object.keys(envmap).forEach(function(envname){
       var vhostmap = envmap[envname];
       Object.keys(vhostmap).forEach(function(vhostname){
         vhostmap[vhostname].forEach(function(host){
-          hash[host] = (hash[host]) ? "ERROR " + hash[host] + host :
-            sprintf("o/%s/e/%s/virtualhosts/%s", result.org, envname, vhostname);
+          var value = sprintf("o/%s/e/%s/virtualhosts/%s", result.org, envname, vhostname);
+          if (exists[host]) {
+            exists[host] = exists[host] + "," + value;
+            errors[host] = true;
+          }
+          else {
+            exists[host] = value;
+          }
         });
       });
     });
   });
-  return hash;
+  return { map: exists, errors: errors};
 }
 
 function doneAllOrgs() {
   return function(e, results) {
     handleError(e);
-    console.log(JSON.stringify(results, null, 2));
+    //console.log(JSON.stringify(results, null, 2));
     var map = performUniquenessAnalysis(results);
     console.log(JSON.stringify(map, null, 2));
   };
