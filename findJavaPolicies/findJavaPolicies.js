@@ -7,7 +7,7 @@
 //
 // This tool does not examine environment-wide or organization-wide resources.
 //
-// last saved: <2017-July-27 11:50:57>
+// last saved: <2017-July-27 16:38:50>
 
 var fs = require('fs'),
     async = require('async'),
@@ -117,13 +117,12 @@ function doneAllProxies(e, results) {
 
 
 function analyzeOneProxy(org) {
-
-return function(proxyName, callback) {
-  org.proxies.get({ name: proxyName }, function(e, result) {
-    handleError(e);
-    async.mapSeries(result.revision, getOneRevision(org, proxyName), doneAllRevisions(proxyName, callback));
-  });
-};
+  return function(proxyName, callback) {
+    org.proxies.get({ name: proxyName }, function(e, result) {
+      handleError(e);
+      async.mapSeries(result.revision, getOneRevision(org, proxyName), doneAllRevisions(proxyName, callback));
+    });
+  };
 }
 
 
