@@ -12,12 +12,8 @@
   },
   "author": "dchiesa@google.com",
   "license": "Apache-2.0",
-  "not-dependencies": {
-    "apigee-edge-js": "git://github.com/DinoChiesa/apigee-edge-js.git",
-    "merge": "^1.2.0"
-  },
   "dependencies": {
-    "apigee-edge-js": "^0.2.12",
+    "apigee-edge-js": "^0.2.13",
     "async": "^2.2.0",
     "merge": "^1.2.0",
     "node-getopt": "0.2.3"
