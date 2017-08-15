@@ -62,6 +62,11 @@ After running the script, all new content will be available.
 Given an API Key, [the findApiKey tool](findApiKey) finds which Developer App it belongs to. 
 
 
+## Find API Product for Proxy
+
+Given an API Proxy, [the findApiProductForProxy tool](findApiProductForProxy) will find any API Product that contains it.
+
+
 
 ## API Proxy Diff
 

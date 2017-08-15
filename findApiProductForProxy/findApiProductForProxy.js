@@ -2,12 +2,12 @@
 // ------------------------------------------------------------------
 //
 // created: Mon Mar 20 09:57:02 2017
-// last saved: <2017-March-20 11:15:02>
+// last saved: <2017-August-14 17:02:09>
 
 var request = require('request'),
     readlineSync = require('readline-sync'),
     Getopt = require('node-getopt'),
-    version = '20170320-1114',
+    version = '20170814-1702',
     netrc = require('netrc')(),
     mgmtUrl,
     getopt = new Getopt([
@@ -120,15 +120,19 @@ edgeGet(url, function(e, result) {
   }
 
   var apiproducts = result.apiProduct;
-  console.log('count of products: %d', apiproducts.length);
+  console.log('total count of API products for that org: %d', apiproducts.length);
   var filtered = apiproducts.filter(function(product) {
         return (product.proxies.indexOf(opt.options.proxy) >= 0);
       });
 
   if (filtered) {
-    console.log('count of products containing %s: %d', opt.options.proxy, filtered.length);
+    console.log('count of API products containing %s: %d', opt.options.proxy, filtered.length);
     if (filtered.length) {
-      console.log(JSON.stringify(filtered));
+      console.log(JSON.stringify(filtered.map( function(item) { return item.name;}), null, 2));
+
+    }
+    if ( opt.options.verbose ) {
+      console.log(JSON.stringify(filtered, null, 2));
     }
   }
 });
