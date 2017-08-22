@@ -1,5 +1,5 @@
 #! /usr/local/bin/node
-/*jslint node:true */
+/*jslint node:true, esversion:6 */
 // findJavaPolicies.js
 // ------------------------------------------------------------------
 // In Apigee Edge, find all policies in all proxies that reference a Java callout.
@@ -7,7 +7,7 @@
 //
 // This tool does not examine environment-wide or organization-wide resources.
 //
-// last saved: <2017-July-27 16:38:50>
+// last saved: <2017-August-22 11:05:02>
 
 var fs = require('fs'),
     async = require('async'),
