@@ -16,7 +16,7 @@
     "apigee-edge-js": "git://github.com/DinoChiesa/apigee-edge-js.git"
   },
   "dependencies": {
-    "apigee-edge-js": "^0.2.16",
+    "apigee-edge-js": "^0.2.18",
     "async": "^2.2.0",
     "node-getopt": "0.2.3",
     "merge": "^1.2.0"

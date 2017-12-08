@@ -7,7 +7,7 @@
 //
 // This tool does not examine environment-wide or organization-wide resources.
 //
-// last saved: <2017-August-22 11:05:02>
+// last saved: <2017-December-07 17:55:03>
 
 var fs = require('fs'),
     async = require('async'),
@@ -17,7 +17,7 @@ var fs = require('fs'),
     sprintf = require('sprintf-js').sprintf,
     Getopt = require('node-getopt'),
     merge = require('merge'),
-    version = '20170727-1150',
+    version = '20171207-1754',
     gRegexp,
     getopt = new Getopt(common.commonOptions.concat([
       ['J' , 'jar=ARG', 'Optional. JAR name to find. Default: search for all JavaCallout policies.'],
@@ -48,7 +48,7 @@ function examineOnePolicy(org, options) {
     org.proxies.getPoliciesForRevision(merge(options, {policy:policyName}), function(e, result) {
       handleError(e);
       var boolResult = (result.policyType == 'JavaCallout');
-      callback(null, boolResult);
+      callback(boolResult);
     });
   };
 }
@@ -61,7 +61,7 @@ function getOneRevision (org, proxyName) {
       if (opt.options.regexp && !gRegexp) {
         gRegexp = new RegExp(opt.options.jar);
       }
-      org.proxies.getResourcesForRevision.get(options, function(e, result){
+      org.proxies.getResourcesForRevision(options, function(e, result){
         if (e) {
           return callback(null, null);
         }
@@ -76,11 +76,11 @@ function getOneRevision (org, proxyName) {
     }
     else {
       //url = sprintf('apis/%s/revisions/%s/policies', proxyName, revision);
-      org.proxies.getPoliciesForRevision(options, function(e, result){
+      org.proxies.getPoliciesForRevision(options, function(e, allPolicies){
         if (e) {
           return callback(e, []);
         }
-        async.filterSeries(result, examineOnePolicy(org, options), function(err, results) {
+        async.filterSeries(allPolicies, examineOnePolicy(org, options), function(results) {
           var javaPolicies = results.map(function(elt){ return sprintf('apis/%s/revisions/%s/policies/%s', proxyName, revision, elt); });
           callback(null, javaPolicies);
         });
