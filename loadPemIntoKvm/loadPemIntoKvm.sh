@@ -5,7 +5,7 @@
 #  loadPemIntoKvm.sh -m https://api.e2e.apigee.net -n -o radical-new -e prod  -M secrets -F sampledata/privatekey.pem -N privatekey
 #
 # Created: <Thu Aug  3 14:05:20 2017>
-# Last Updated: <2017-December-13 16:18:23>
+# Last Updated: <2017-December-13 16:30:26>
 #
 
 scriptname=${0##*/}
@@ -99,9 +99,9 @@ check_org() {
   cat ${CURL_OUT} | grep -A 1 features.isCpsEnabled | grep value | grep -q true
   org_cps_status=$?
   if [[ ${org_cps_status} -ne 0 ]]; then
-      printf "the org is not CPS enabled.\n"
+      printf "The org is not CPS enabled.\n"
   else
-      printf "the org is CPS enabled.\n"
+      printf "The org is CPS enabled.\n"
   fi
   [[ ${CURL_RC} -ne 200 ]]
 }
@@ -114,7 +114,7 @@ check_env() {
 
 kvm_entry_exists() {
     local keyname=$1
-    MYCURL -X GET ${baseurl}/${mapname}/entries/${keyname}
+    MYCURL -X GET ${baseurl}/${mapname}/entries/${kvmentryname}
     if [[ ${CURL_RC} -eq 200 ]]; then
         printf "The KVM entry exists.\n"
     else 
@@ -142,7 +142,7 @@ insert_kvm_entry() {
 
         if kvm_entry_exists $keyname ; then
             # Update
-            MYCURL -X POST ${baseurl}/${mapname}/entries/${keyname} -H content-type:application/json \
+            MYCURL -X POST ${baseurl}/${mapname}/entries/${kvmentryname} -H content-type:application/json \
                    -d "${payload}"
         else
             # Create
@@ -150,7 +150,7 @@ insert_kvm_entry() {
                    -d "${payload}"
         fi
     else
-        # not CPS enabled - replace all entries !!
+        # not CPS enabled
         payload=$'{\n'
         payload+=$'  "name" : "'$mapname$'",\n'
         payload+=$'  "entry" : [ { '
@@ -163,7 +163,6 @@ insert_kvm_entry() {
 
         MYCURL -X POST ${baseurl}/${mapname} -H content-type:application/json \
                -d "${payload}"
-        
     fi    
     cat ${CURL_OUT}
     printf "\n\n"
@@ -249,10 +248,10 @@ baseurl=${mgmtserver}/v1/o/${orgname}/e/${envname}/keyvaluemaps
 
 MYCURL -X GET ${baseurl}/${mapname}
 if [[ ${CURL_RC} -eq 200 ]]; then
-    printf "the map '%s' exists.\n" $mapname
+    printf "The map '%s' exists.\n" $mapname
     insert_kvm_entry
 else
-    printf "the map '%s' does not exist.\n" $mapname
+    printf "The map '%s' does not exist.\n" $mapname
 fi
 
 CleanUp
