@@ -14,7 +14,7 @@
     "node-getopt": "0.2.3",
     "prompt": "0.2.14",
     "readline-sync": "^1.4.1",
-    "request": "2.53.0",
+    "request": ">=2.68.0",
     "sprintf-js": "1.0.2"
   }
 }

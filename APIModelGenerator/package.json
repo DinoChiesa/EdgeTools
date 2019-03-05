@@ -6,7 +6,7 @@
   "author": "dchiesa@apigee.com",
   "dependencies": {
     "node-getopt": "0.2.3",
-    "request": "2.53.0",
+    "request": ">=2.68.0",
     "async" : "0.9.0",
     "dateformat" : "1.0.11",
     "tmp" : "0.0.25",

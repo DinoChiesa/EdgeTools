@@ -1,6 +1,6 @@
 # Generate API Model from API Proxies
 
-This is intended for generating API Model from an API proxy that exists in Edge. 
+This is intended for generating API Model from an API proxy that exists in Edge.
 
 
 ## Usage
