@@ -4,9 +4,9 @@
 # createAndLoadTrustStore.sh
 #
 # For reference see http://docs.apigee.com/api-services/content/keystores-and-truststores
-# 
+#
 # Created: <Tue Jan 17 18:21:42 2017>
-# Last Updated: <2017-March-23 13:48:56>
+# Last Updated: <2019-September-27 17:57:29>
 #
 
 defaultmgmtserver="https://api.enterprise.apigee.com"
@@ -63,7 +63,7 @@ choose_credentials() {
 
   read -p "username for Edge org ${orgname} at ${mgmtserver} ? (blank to use .netrc): " username
   echo
-  if [[ "$username" = "" ]] ; then  
+  if [[ "$username" = "" ]] ; then
     credentials="-n"
   else
     echo -n "Org Admin Password: "
@@ -118,7 +118,7 @@ done
 echo
 if [[ "X$mgmtserver" = "X" ]]; then
   mgmtserver="$defaultmgmtserver"
-fi 
+fi
 
 if [[ "X$orgname" = "X" ]]; then
     echo "You must specify an org name (-o)."
@@ -151,12 +151,12 @@ if [[ "X$credentials" = "X" ]]; then
     credentials='-n'
   else
     choose_credentials
-  fi 
+  fi
 else
   maybe_ask_password
-fi 
+fi
 
-check_org 
+check_org
 if [[ ${check_org} -ne 0 ]]; then
   echo "that org cannot be validated"
   CleanUp
@@ -172,7 +172,7 @@ MYCURL -X POST -H "Content-Type:application/json" \
 for cert in ${pemfiles[@]} ; do
    MYCURL -X POST -H "Content-Type: multipart/form-data" \
           -F file="@${cert}" \
-          ${mgmtserver}/v1/o/${orgname}/e/${envname}/keystores/${truststoreName}/certs?alias=${cert} 
+          ${mgmtserver}/v1/o/${orgname}/e/${envname}/keystores/${truststoreName}/certs?alias=${cert}
 done
 
 # verify
@@ -180,4 +180,3 @@ MYCURL -X GET -H "Accept:application/json" \
      ${mgmtserver}/v1/o/${orgname}/e/${envname}/keystores/${truststoreName}
 
 CleanUp
-
