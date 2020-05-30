@@ -4,7 +4,8 @@
 // ------------------------------------------------------------------
 // in Apigee Edge, find all policies in all proxies that reference a SharedFlow
 //
-// last saved: <2020-May-22 17:50:48>
+// last saved: <2020-May-29 16:55:21>
+/* jshint esversion:9 */
 
 var fs = require('fs'),
     async = require('async'),
@@ -13,7 +14,6 @@ var fs = require('fs'),
     apigeeEdge = edgejs.edge,
     sprintf = require('sprintf-js').sprintf,
     Getopt = require('node-getopt'),
-    merge = require('merge'),
     version = '2020-05-26:15:57:00',
     getopt = new Getopt(common.commonOptions.concat([
       ['s' , 'sharedflow=ARG', 'Optional. SharedFlow name to find.'],
@@ -42,8 +42,8 @@ function handleError(e) {
 
 function examineOnePolicy(org, options) {
   return function(policyName, callback) {
-    org.proxies.getPoliciesForRevision(merge(options, {policy:policyName}), function(e, result) {
-      // 
+    org.proxies.getPoliciesForRevision({...options, policy:policyName}, function(e, result) {
+      //
       handleError(e);
       // return true if SharedFlow and if the sharedFlowBundle is as specified
       var boolResult = (result.policyType == 'FlowCalloutBean') &&
