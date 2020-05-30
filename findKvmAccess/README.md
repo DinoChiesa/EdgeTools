@@ -1,11 +1,16 @@
 # findKvmAccess
 
-Queries all the policies in all the proxies in an organization to determine which of them includes a KeyValueMapOperations policy, optionally for a specific mapIdentifier.
-
+Queries all the policies in all the proxies in an organization to determine
+which of them includes a KeyValueMapOperations policy, optionally for a specific
+mapIdentifier, and optionally for a specific scope.
 
 The script displays the list of URLs for policies that match.
 
-## Examples:
+It performs an exhaustive ("brute force") search of all the policies of all the
+revisions of all the proxies in an organization. For an org with lots of
+proxies, the script can take some time to run.
+
+## Usage Examples
 
 Find all KVM policies:
 
@@ -30,5 +35,3 @@ Find all KVM policies that access map1 in scope environment:
  ...
  [2017-Mar-27 12:39:30] matching KVM policies: [... ]
 ```
-
-

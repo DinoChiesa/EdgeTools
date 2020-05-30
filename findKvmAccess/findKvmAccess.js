@@ -4,7 +4,8 @@
 // ------------------------------------------------------------------
 // in Apigee Edge, find all policies in all proxies that reference a KVM
 //
-// last saved: <2017-July-27 11:50:48>
+// last saved: <2020-May-29 17:08:10>
+/* jshint esversion:9 */
 
 var fs = require('fs'),
     async = require('async'),
@@ -13,8 +14,7 @@ var fs = require('fs'),
     apigeeEdge = edgejs.edge,
     sprintf = require('sprintf-js').sprintf,
     Getopt = require('node-getopt'),
-    merge = require('merge'),
-    version = '20170727-1150',
+    version = '20200529-1707',
     getopt = new Getopt(common.commonOptions.concat([
       ['M' , 'kvm=ARG', 'Optional. KVM name to find.'],
       ['S' , 'scope=ARG', 'Optional. Scope to match. Should be one of: (organization, environment, apiproxy)']
@@ -41,7 +41,7 @@ function handleError(e) {
 
 function examineOnePolicy(org, options) {
   return function(policyName, callback) {
-    org.proxies.getPoliciesForRevision(merge(options, {policy:policyName}), function(e, result) {
+    org.proxies.getPoliciesForRevision({...options, policy:policyName}, function(e, result) {
       handleError(e);
       // return true if KVM and if the mapIdentifier is as specified
       var boolResult = (result.policyType == 'KeyValueMapOperations') &&
@@ -88,7 +88,6 @@ function analyzeOneProxy(org) {
     });
   };
 }
-
 
 common.verifyCommonRequiredParameters(opt.options, getopt);
 

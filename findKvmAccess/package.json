@@ -1,6 +1,6 @@
 {
   "name": "findKvmAccess-apigee-edge-tools",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Tool to find Kvm Access within proxies in an org in Apigee Edge",
   "main": "findKvmAccess.js",
   "repository": {
@@ -13,9 +13,8 @@
   "author": "dchiesa@google.com",
   "license": "Apache-2.0",
   "dependencies": {
-   "apigee-edge-js": "^0.2.12",
+    "apigee-edge-js": "^0.4.18",
     "async": "^2.2.0",
-    "node-getopt": "0.2.3",
-    "merge": "^1.2.0"
+    "node-getopt": "0.2.3"
   }
 }
