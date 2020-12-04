@@ -1,0 +1,17 @@
+{
+  "name": "apigee-bulk-api-exporter",
+  "version": "0.1.3",
+  "description": "Tool that exports API proxies from an Edge org",
+  "main": "bulkExport.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "dchiesa@google.com",
+  "license": "MIT",
+  "dependencies": {
+    "apigee-edge-js": ">=0.4.20",
+    "mkdirp": "^1.0.4",
+    "node-getopt": "^0.2.3",
+    "sprintf-js": "^1.1.2"
+  }
+}
