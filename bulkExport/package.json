@@ -9,8 +9,9 @@
   "author": "dchiesa@google.com",
   "license": "MIT",
   "dependencies": {
-    "apigee-edge-js": ">=0.4.20",
+    "apigee-edge-js": "^0.4.27",
     "mkdirp": "^1.0.4",
+    "node": "^16.5.0",
     "node-getopt": "^0.2.3",
     "sprintf-js": "^1.1.2"
   }
