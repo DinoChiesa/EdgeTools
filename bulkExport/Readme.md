@@ -7,8 +7,8 @@ The names of the zip files are based on the API name and the revision number.
 
 ## Requirements
 
-* Latest Node.JS installed on your machine
-* GIT CLI installed on your machine
+* Node.JS  ">= 12.22.0", npm ">= 8.3.0" installed on your machine
+* GIT CLI installed on your machine, to allow `git clone`.
 
 ## Installation :
 
@@ -55,17 +55,33 @@ $ node bulkExport.js -n -o ORGNAME -v -e prod
 
 You can use the `-R` option with the `-e` option.
 
-There is also a `-t` option, for "trial", or ""dryrun". Rather than exporting , it simply prints out what it would export. Using this you can test out the tool before doing the exports.
+There is also a `-t` option, for "trial", or "dryrun". Rather than exporting, it simply prints out what it would export. Using this you can test out the tool before doing the exports.
 
 You can also export sharedflows, rather than APIs.
 
 Check the help on the tool for more information on options.
 
+## Using a previously acquired token
+
+This is handy with Apigee Edge with MFA, or hybrid/X.
+
+```
+$ APIGEE_BEARER_TOKEN=$(get_token)
+
+$ ORG=...
+
+# for hybrid or X
+$ node bulkExport.js -v --apigeex --token $APIGEE_BEARER_TOKEN -o $ORG
+
+# for Edge
+$ node bulkExport.js -v --token $APIGEE_BEARER_TOKEN -o $ORG
+```
+
 ## Using an alternative Management server
 
 By default, the tool uses "https://api.enterprise.apigee.com" as the
-base URL for the Edge management server. If you have a customer-managed
-Apigee Edge, you will have a different base URL for the management
+base URL for the Apigee management server. If you have a customer-managed
+Apigee Edge (aka OPDK), you will have a different base URL for the management
 server. You can override the default like this:
 
 ```
@@ -83,5 +99,5 @@ node module to enumerate proxies and export them.
 
 # License
 
-This material is Copyright 2015,2016 Apigee Corporation. Copyright 2017-2020 Google LLC.
+This material is Copyright 2015,2016 Apigee Corporation. Copyright 2017-2022 Google LLC.
 and is licensed under the Apache 2.0 license. See the [LICENSE](../LICENSE) file.
