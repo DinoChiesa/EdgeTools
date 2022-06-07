@@ -1,5 +1,4 @@
 #! /usr/local/bin/node
-/*jslint esversion:9, node:true */
 // bulkExport.js
 // ------------------------------------------------------------------
 // export one or more Apigee Edge proxy bundles
@@ -18,7 +17,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-// last saved: <2022-March-21 14:33:51>
+// last saved: <2022-June-07 14:54:48>
+/*jslint esversion:9, node:true, strict:implied */
 
 const fs         = require('fs'),
       path       = require('path'),
@@ -28,7 +28,7 @@ const fs         = require('fs'),
       utility    = apigeejs.utility,
       apigee     = apigeejs.apigee,
       Getopt     = require('node-getopt'),
-      version    = '20220321-1429',
+      version    = '20220607-1454',
       defaults   = { destination : 'exported-' + timeString() },
       getopt     = new Getopt(utility.commonOptions.concat([
         ['N' , 'name=ARG', 'name of existing API proxy or shared flow'],
@@ -88,7 +88,11 @@ function exportMatchingArtifacts(org, {pattern, env}) {
   let re1 = (pattern) ? new RegExp(pattern) : null;
 
   return org[collection].get({})
+    // .then( proxies => (console.log(JSON.stringify(proxies)), proxies)) // diags
     .then( proxies => {
+      if (proxies.proxies) {
+        proxies = proxies.proxies.map(p => p.name); // x/hybrid
+      }
       if (re1) {
         proxies = proxies.filter( a => a.match(re1) );
       }

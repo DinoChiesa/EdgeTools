@@ -1,7 +1,9 @@
 # How to use this tool ?
 
 This tool exports all of the API Proxies that are loaded into an organization.
-It results in a single ZIP file being downloaded for each revision of each api proxy.
+or all of the proxies that are deployed to a particular environment.
+
+The result is a directory containing a single ZIP file for each revision of each api proxy.
 The names of the zip files are based on the API name and the revision number.
 
 
@@ -27,29 +29,28 @@ $ npm install
 How to download the latest revision of all proxies?
 Once installed run below command from "bulkExport" directory.
 
+For Apigee Edge with basic auth:
 ```
 $ node bulkExport.js --username={{YOURAPIGEEEDGEEMAILADDRESS}} --password={{YOURAPIGEEDGEPASSWORD}} --org={{YOURAPIGEEEDGEORGNAME}} -v
 
 ```
 
-If you store credentials in .netrc, the tool can use them.  Do it like so:
+For Apigee Edge with a token you obtained previously, export only those APIs that have names that start with the letter p:
+```
+node ./bulkExport.js --token $TOKEN -o $ORG --pattern '^p.*$'
 
 ```
-$ node bulkExport.js -n -o ORGNAME -v
 
+For Apigee X with a token you obtained previously:
 ```
-
-Export only those APIs with names matching a specific regex:
-
-```
-$ node bulkExport.js -n -o ORGNAME -v -R ytd\*
+node ./bulkExport.js  --apigeex --token $TOKEN -o $ORG
 
 ```
 
 Export only those APIs deployed to a particular environment:
 
 ```
-$ node bulkExport.js -n -o ORGNAME -v -e prod
+$ node ./bulkExport.js --token $TOKEN -o $ORG -v -e prod
 
 ```
 
@@ -61,21 +62,6 @@ You can also export sharedflows, rather than APIs.
 
 Check the help on the tool for more information on options.
 
-## Using a previously acquired token
-
-This is handy with Apigee Edge with MFA, or hybrid/X.
-
-```
-$ APIGEE_BEARER_TOKEN=$(get_token)
-
-$ ORG=...
-
-# for hybrid or X
-$ node bulkExport.js -v --apigeex --token $APIGEE_BEARER_TOKEN -o $ORG
-
-# for Edge
-$ node bulkExport.js -v --token $APIGEE_BEARER_TOKEN -o $ORG
-```
 
 ## Using an alternative Management server
 
