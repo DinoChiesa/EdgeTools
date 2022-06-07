@@ -3,7 +3,7 @@
 // ------------------------------------------------------------------
 // in Apigee, find all policies in all proxies that reference a SharedFlow
 //
-// last saved: <2022-June-07 14:21:58>
+// last saved: <2022-June-07 14:33:04>
 /* jshint node:true, esversion:9, strict:implied */
 
 const fs = require('fs'),
@@ -53,7 +53,6 @@ function processZipBundle(namerev, zipfile) {
       flowCalloutPolicies: flowCallouts.map(fc => fc.name)
     } :
     null;
-
 }
 
 function getExporter(org, tmpdir) {
@@ -81,7 +80,7 @@ let opt = getopt.parse(process.argv.slice(2));
 
 common.verifyCommonRequiredParameters(opt.options, getopt);
 
-var options = {
+let options = {
       mgmtServer: opt.options.mgmtserver,
       org : opt.options.org,
       user: opt.options.username,

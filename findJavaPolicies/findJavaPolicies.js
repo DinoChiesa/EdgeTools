@@ -1,134 +1,90 @@
 #! /usr/local/bin/node
-/*jslint node:true, esversion:6 */
 // findJavaPolicies.js
 // ------------------------------------------------------------------
-// In Apigee Edge, find all policies in all proxies that reference a Java callout.
+// In Apigee, find all policies in all proxies that reference a Java callout.
 // Or, alternatively, find proxies in an org that include a specific JAR as a resource.
 //
-// This tool does not examine environment-wide or organization-wide resources.
+// This tool does not examine environment-wide or organization-wide Java resources.
 //
-// last saved: <2017-December-07 17:55:03>
+// last saved: <2022-June-07 14:40:25>
+/*jslint node:true, esversion:9, strict:implied */
 
-var fs = require('fs'),
-    async = require('async'),
-    edgejs = require('apigee-edge-js'),
-    common = edgejs.utility,
-    apigeeEdge = edgejs.edge,
-    sprintf = require('sprintf-js').sprintf,
-    Getopt = require('node-getopt'),
-    merge = require('merge'),
-    version = '20171207-1754',
-    gRegexp,
-    getopt = new Getopt(common.commonOptions.concat([
+const fs = require('fs'),
+      path = require('path'),
+      util = require('util'),
+      tmp      = require('tmp-promise'),
+      AdmZip   = require('adm-zip'),
+      DOM      = require('@xmldom/xmldom').DOMParser,
+      xpath    = require('xpath'),
+      apigeejs = require('apigee-edge-js'),
+      common = apigeejs.utility,
+      apigee = apigeejs.apigee,
+      Getopt = require('node-getopt'),
+      version = '20220607-1438',
+      getopt = new Getopt(common.commonOptions.concat([
       ['J' , 'jar=ARG', 'Optional. JAR name to find. Default: search for all JavaCallout policies.'],
-      ['R' , 'regexp', 'Optional. Treat the -J option as a regexp. Default: perform string match.']
-    ])).bindHelp();
+      ['' , 'deployed', 'Optional. Search only proxies that are deployed to any environment.'],
+      ['' , 'environment=ARG', 'Optional. Search only proxies that are deployed to the specified environment.'],
+      ['' , 'regex', 'Optional. Treat the -J option as a Regular Expression. Default: perform string match.'],
+      ['' , 'proxyregex=ARG', 'Optional. filter on proxies that match this regex. Default: scan all proxies.']
+      ])).bindHelp();
 
 // ========================================================
 
+function processZipBundle(namerev, zipfile) {
+  // temporarily unzip the file and then scan the dir
+
+  let zip = new AdmZip(zipfile),
+      zipEntries = zip.getEntries(),
+      policyFileRe = new RegExp('^apiproxy/policies/[^/]+\\.xml$'),
+      policies = zipEntries.filter( entry => entry.entryName.match(policyFileRe));
+
+  let flowCallouts = policies.filter(entry => {
+        let data = entry.getData().toString('utf8'),
+            doc = new DOM().parseFromString(data),
+            policyType = xpath.select('/*', doc)[0].tagName;
+
+        let found = (policyType == 'JavaCallout');
+        if (found && opt.options.jar) {
+          let url = xpath.select('/JavaCallout/ResourceURL', doc)[0].value.slice(7);
+          found = (opt.options.regex) ? target.match(new RegExp(opt.options.jar)) : (target == opt.options.jar);
+        }
+        return found;
+      });
+  return flowCallouts.length ?
+    {
+      ...namerev,
+      flowCalloutPolicies: flowCallouts.map(fc => fc.name)
+    } :
+    null;
+}
+
+function getExporter(org, tmpdir) {
+  return ({name, revision}) => {
+    return org.proxies.export({name:name, revision:revision})
+      .then( result => {
+        let fqfn = path.join(tmpdir, result.filename);
+      fs.writeFileSync(fqfn, result.buffer);
+      // if (opt.options.verbose) {
+      //   common.logWrite('export ok file: %s', fqfn);
+      // }
+      return fqfn;
+    });
+  };
+}
+
 console.log(
-  'Apigee Edge JavaCallout/JAR check tool, version: ' + version + '\n' +
-    'Node.js ' + process.version + '\n');
+  `Apigee JavaCallout/JAR check tool, version: ${version}\n` +
+    `Node.js ${process.version}\n`);
 
 common.logWrite('start');
 
 // process.argv array starts with 'node' and 'scriptname.js'
-var opt = getopt.parse(process.argv.slice(2));
-
-function handleError(e) {
-    if (e) {
-      console.log(e);
-      console.log(e.stack);
-      process.exit(1);
-    }
-}
-
-function examineOnePolicy(org, options) {
-  return function(policyName, callback) {
-    org.proxies.getPoliciesForRevision(merge(options, {policy:policyName}), function(e, result) {
-      handleError(e);
-      var boolResult = (result.policyType == 'JavaCallout');
-      callback(boolResult);
-    });
-  };
-}
-
-function getOneRevision (org, proxyName) {
-  return function (revision, callback) {
-    var options = {name:proxyName, revision:revision};
-    if ( opt.options.jar ) {
-      // url = sprintf('apis/%s/revisions/%s/resources', proxyName, revision);
-      if (opt.options.regexp && !gRegexp) {
-        gRegexp = new RegExp(opt.options.jar);
-      }
-      org.proxies.getResourcesForRevision(options, function(e, result){
-        if (e) {
-          return callback(null, null);
-        }
-        var jars = result && result.filter(function(item){
-              var isJava = item.startsWith('java://');
-              if ( ! isJava ) return false;
-              var jarName = item.substring(7);
-              return (gRegexp)?gRegexp.test(jarName) : (jarName == opt.options.jar);
-            });
-        callback(null, (jars && jars.length>0)?sprintf('apis/%s/revisions/%s', proxyName, revision):null);
-      });
-    }
-    else {
-      //url = sprintf('apis/%s/revisions/%s/policies', proxyName, revision);
-      org.proxies.getPoliciesForRevision(options, function(e, allPolicies){
-        if (e) {
-          return callback(e, []);
-        }
-        async.filterSeries(allPolicies, examineOnePolicy(org, options), function(results) {
-          var javaPolicies = results.map(function(elt){ return sprintf('apis/%s/revisions/%s/policies/%s', proxyName, revision, elt); });
-          callback(null, javaPolicies);
-        });
-      });
-    }
-  };
-}
-
-function doneAllRevisions(proxyName, callback) {
-  return function(e, results) {
-    handleError(e);
-    if (opt.options.jar) {
-      results = results.filter(function(r) {return r;});
-      if (results && results.length > 0) {
-        //results = results.map(function(r) {return parseInt(r, 10);});
-        common.logWrite('proxy: '+ proxyName + ' ' + JSON.stringify(results));
-      }
-      callback(null, results);
-    }
-    else {
-      // results is an array of arrays
-      var flattened = [].concat.apply([], results);
-      common.logWrite('proxy: '+ proxyName + ' ' + JSON.stringify(flattened));
-      callback(null, flattened);
-    }
-  };
-}
-
-function doneAllProxies(e, results) {
-  handleError(e);
-  var flattened = [].concat.apply([], results);
-  common.logWrite('matching Java %s: %s', (opt.options.jar)?"proxies":"policies", JSON.stringify(flattened));
-}
-
-
-function analyzeOneProxy(org) {
-  return function(proxyName, callback) {
-    org.proxies.get({ name: proxyName }, function(e, result) {
-      handleError(e);
-      async.mapSeries(result.revision, getOneRevision(org, proxyName), doneAllRevisions(proxyName, callback));
-    });
-  };
-}
-
+let opt = getopt.parse(process.argv.slice(2));
 
 common.verifyCommonRequiredParameters(opt.options, getopt);
 
-var options = {
+let options = {
       mgmtServer: opt.options.mgmtserver,
       org : opt.options.org,
       user: opt.options.username,
@@ -136,15 +92,54 @@ var options = {
       verbosity: opt.options.verbose || 0
     };
 
-apigeeEdge.connect(options, function(e, org){
-  if (e) {
-    common.logWrite(JSON.stringify(e, null, 2));
-    //console.log(e.stack);
-    process.exit(1);
-  }
+apigee.connect(common.optToOptions(opt))
+  .then(org => {
+    let p = null;
+    if( opt.options.deployed || opt.options.environment) {
+      let opts = opt.options.environment ? {environment:opt.options.environment} : {};
+      p = org.proxies.getDeployments(opts)
+        .then(r =>
+              r.deployments.map(d => ({name: d.apiProxy, revision:d.revision})));
+      // array of {name, revision}
+      if (opt.options.proxyregex) {
+        // filter on proxy name
+        p = p
+          .then(pairs => pairs.filter( ({name}) => name.match(new RegExp(opt.options.proxyregex))));
+      }
+    }
+    else {
+      // get all proxies
+      p = org.proxies.get()
+        .then(r => r.proxies.map(p => p.name));
+      if (opt.options.proxyregex) {
+        // filter on name
+        let re = new RegExp(opt.options.proxyregex);
+        p = p.then(proxies => proxies.filter( name => name.match(re)));
+      }
+      // get latest revision of each
+      p = p.then(a => {
+          let reducer = (p, name) =>
+            p.then(a =>
+                 org.proxies.get({name})
+                 .then( ({revision}) => [...a, {name, revision:Math.max.apply(Math,revision.map(c => Number(c)))}]));
+          return a.reduce(reducer, Promise.resolve([])); // array of {name, revision}
+        });
+    }
+    return p
+      .then(pairs =>
+            ({tmpdir:tmp.dirSync({unsafeCleanup:true, prefix: 'findJavaPolicies'}), pairs}))
+      .then(({tmpdir, pairs}) => {
+        let exportOne = getExporter(org, tmpdir.name);
+        let reducer = (p, namerev) =>
+        p.then(a =>
+               exportOne(namerev)
+               .then(zipFilename =>
+                     [...a, processZipBundle(namerev, zipFilename)]));
+        return pairs.reduce(reducer, Promise.resolve([])) // reduce to those FC, maybe to specific SharedFlow
+          .then(r => r.filter(r => !!r))
+          .then(r => (tmpdir.removeCallback(), r));
+      });
+  })
+  .then(r => console.log(JSON.stringify(r, null, 2)))
 
-  org.proxies.get({}, function(e, proxies) {
-    async.mapSeries(proxies, analyzeOneProxy(org), doneAllProxies);
-  });
-
-});
+  .catch( e => console.log('while executing, error: ' + util.format(e)) );
