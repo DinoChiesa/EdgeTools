@@ -1,6 +1,6 @@
 {
   "name": "findSharedFlowAccess-apigee-edge-tools",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Tool to find SharedFlow access within proxies in an org in Apigee",
   "main": "findSharedFlowAccess.js",
   "repository": {
@@ -13,8 +13,15 @@
   "author": "dchiesa@google.com",
   "license": "Apache-2.0",
   "dependencies": {
-    "apigee-edge-js": "^0.4.18",
-    "async": "^2.2.0",
-    "node-getopt": "0.2.3"
+    "@xmldom/xmldom": "^0.8.2",
+    "adm-zip" : "^0.5.9",
+    "apigee-edge-js": "^0.4.33",
+    "node-getopt": "0.2.3",
+    "tmp-promise": "^3.0.3",
+    "xpath": "^0.0.32"
+  },
+  "engines": {
+    "node": ">= 12.22.0",
+    "npm": ">= 8.3.0"
   }
 }
