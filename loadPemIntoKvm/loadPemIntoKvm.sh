@@ -1,11 +1,14 @@
 #!/bin/bash
 # -*- mode:shell-script; coding:utf-8; -*-
 #
+# Works with Apigee EDGE only. Not with X / hybrid!
+# See the related utility called xloadFileIntoKvm for an example that works with Apigee X/hybrid.
+#
 # example usage:
 #  loadPemIntoKvm.sh -m https://api.e2e.apigee.net -n -o radical-new -e prod  -M secrets -F sampledata/privatekey.pem -N privatekey
 #
 # Created: <Thu Aug  3 14:05:20 2017>
-# Last Updated: <2017-December-13 16:30:26>
+# Last Updated: <2022-June-24 12:08:55>
 #
 
 scriptname=${0##*/}
@@ -39,11 +42,6 @@ usage() {
   echo "  -M map    required. KVM Map name. The map must exist."
   echo "  -N name   required. name to use withiin KVM."
   echo "  -F file   required. File containing PEM. This becomes the value for the KVM entry."
-  # echo "  -U        optional. tells the script to update a KVM entry."
-  # echo "  -D        optional. tells the script to delete a KVM entry."
-  # echo "  -A        optional. tells the script to add a KVM entry."
-  # echo
-  # echo "One of -U -D -A is required."
   echo
   exit 1
 }
@@ -71,7 +69,7 @@ choose_credentials() {
 
   read -p "username for Edge org ${org} at ${mgmtserver} ? (blank to use .netrc): " username
   echo
-  if [[ "$username" = "" ]] ; then  
+  if [[ "$username" = "" ]] ; then
     credentials="-n"
   else
     echo -n "Org Admin Password: "
@@ -117,7 +115,7 @@ kvm_entry_exists() {
     MYCURL -X GET ${baseurl}/${mapname}/entries/${kvmentryname}
     if [[ ${CURL_RC} -eq 200 ]]; then
         printf "The KVM entry exists.\n"
-    else 
+    else
         printf "The KVM entry Does Not Exist.\n"
     fi
     [[ ${CURL_RC} -eq 200 ]]
@@ -163,7 +161,7 @@ insert_kvm_entry() {
 
         MYCURL -X POST ${baseurl}/${mapname} -H content-type:application/json \
                -d "${payload}"
-    fi    
+    fi
     cat ${CURL_OUT}
     printf "\n\n"
 }
@@ -226,10 +224,10 @@ if [[ "X$credentials" = "X" ]]; then
     credentials='-n'
   else
     choose_credentials
-  fi 
+  fi
 else
   maybe_ask_password
-fi 
+fi
 
 if check_org ; then
   printf "that org cannot be validated.\n"
@@ -255,11 +253,3 @@ else
 fi
 
 CleanUp
-
-
-
-
-
-
-
-

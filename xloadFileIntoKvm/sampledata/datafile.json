@@ -1,0 +1,8 @@
+{
+  "lorem" : "you can load this entire JSON file into the KVM as a single entry",
+  "ipsum" : "the JSON would then be available for later use within the API Proxy request context",
+  "morbi" : "There is a jsonpath function available in Message Templates that allows you to extract fields from a large JSON",
+  "interdum" : "you might do something like this:   <AssignVariable>\n    <Name>path1</Name>\n    <Value>$.name</Value>\n  </AssignVariable>\n  <AssignVariable>\n    <Name>spanner-session</Name>\n    <Template>{jsonPath(path1,response.content)}</Template>\n  </AssignVariable>\n",
+  "elit" : "a good use case might be loading a JSON file containing credentials for a service account, into Apigee",
+  "quam" : "it's necessary to take care when specifying a JSON containing newlines in the values, as input to the KVM API. One needs to insure proper escaping, especially if using shell commands to drive the API. See the script for an example of handling newlines correctly with sed. When using something like a JavaScript or Python to invoke the Apigee KVM API, escaping newlines is less of a concern."
+}
