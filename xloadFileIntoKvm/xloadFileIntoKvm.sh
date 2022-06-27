@@ -2,10 +2,10 @@
 # -*- mode:shell-script; coding:utf-8; -*-
 #
 # example usage:
-#  xloadFileIntoKvm.sh -t $TOKEN -o radical-new -e prod -F sampledata/privatekey.pem -N privatekey  -M secrets
+#  xloadFileIntoKvm.sh -t $TOKEN -o orgname -e envname -F sampledata/filename.json -N entryname  -M mapname
 #
 # Created: <Thu Aug  3 14:05:20 2017>
-# Last Updated: <2022-June-23 13:57:46>
+# Last Updated: <2022-June-27 11:16:31>
 #
 
 scriptname=${0##*/}
@@ -104,11 +104,10 @@ CleanUp() {
 insert_kvm_entry() {
     local payload
     local file_contents=$(cat "$datafilename")
-    # double-escape newlines
-    #file_contents="${file_contents//$'\\'/\\\\}"
+    # This looks like a no-op, but actually it double-escape newlines.
     file_contents="${file_contents//$'\\\\n'/\\\\n}"
-   # file_contents="${file_contents//$'-'/\\\\n}"
-    # do the right thing for quotes
+    # Also, we need to do the right thing for quotes in the file contents. This
+    # is expecially relevant for JSON files.
     file_contents=`echo -n ${file_contents} | sed 's/"/\\\"/g'`
     payload=$'{\n'
     payload+=$'  "name" : "'$kvmentryname$'",\n'
@@ -116,8 +115,8 @@ insert_kvm_entry() {
     payload+="${file_contents}"
     payload+=$'"\n'
     payload+=$'}'
-echo $payload
-    # I believe there is no update.  The way to update an entry is delete-then-create
+    echo $payload
+    # There is no update API.  The way to update an entry is delete-then-create.
     if kvm_entry_exists ; then
         # Delete first
         MYCURL -X DELETE ${baseurl}/environments/${envname}/keyvaluemaps/${mapname}/entries/$kvmentryname
