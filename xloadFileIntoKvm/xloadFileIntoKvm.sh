@@ -5,7 +5,7 @@
 #  xloadFileIntoKvm.sh -t $TOKEN -o orgname -e envname -F sampledata/filename.json -N entryname  -M mapname
 #
 # Created: <Thu Aug  3 14:05:20 2017>
-# Last Updated: <2022-June-27 11:16:31>
+# Last Updated: <2022-June-29 14:48:11>
 #
 
 scriptname=${0##*/}
@@ -107,7 +107,7 @@ insert_kvm_entry() {
     # This looks like a no-op, but actually it double-escape newlines.
     file_contents="${file_contents//$'\\\\n'/\\\\n}"
     # Also, we need to do the right thing for quotes in the file contents. This
-    # is expecially relevant for JSON files.
+    # is especially relevant for JSON files.
     file_contents=`echo -n ${file_contents} | sed 's/"/\\\"/g'`
     payload=$'{\n'
     payload+=$'  "name" : "'$kvmentryname$'",\n'
@@ -115,7 +115,7 @@ insert_kvm_entry() {
     payload+="${file_contents}"
     payload+=$'"\n'
     payload+=$'}'
-    echo $payload
+    # echo $payload
     # There is no update API.  The way to update an entry is delete-then-create.
     if kvm_entry_exists ; then
         # Delete first
@@ -123,7 +123,8 @@ insert_kvm_entry() {
     fi
 
     # Create
-    MYCURL -X POST ${baseurl}/environments/${envname}/keyvaluemaps/${mapname}/entries -H content-type:application/json \
+    MYCURL -X POST ${baseurl}/environments/${envname}/keyvaluemaps/${mapname}/entries \
+           -H content-type:application/json \
            -d "${payload}"
 
     #cat ${CURL_OUT}
