@@ -13,7 +13,7 @@
   "author": "dchiesa@google.com",
   "license": "Apache-2.0",
   "dependencies": {
-    "@xmldom/xmldom": "^0.8.2",
+    "@xmldom/xmldom": "^0.8.3",
     "adm-zip" : "^0.5.9",
     "apigee-edge-js": "^0.4.33",
     "node-getopt": "0.2.3",
