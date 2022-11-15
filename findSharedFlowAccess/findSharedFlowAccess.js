@@ -1,9 +1,9 @@
 #! /usr/local/bin/node
 // findSharedFlowAccess.js
 // ------------------------------------------------------------------
-// in Apigee, find all policies in all proxies that reference a SharedFlow
+// in Apigee, find all policies in all proxies that call out to a SharedFlow
 //
-// last saved: <2022-June-07 14:33:04>
+// last saved: <2022-November-15 13:48:48>
 /* jshint node:true, esversion:9, strict:implied */
 
 const fs = require('fs'),
