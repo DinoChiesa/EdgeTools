@@ -1,0 +1,17 @@
+{
+  "name": "apigee-proxy-interactive-undeployer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "deploymentTool.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "apigee-edge-js": "^0.4.33",
+    "find-cache-dir": "^4.0.0",
+    "inquirer": "^8.0.0",
+    "node-getopt": "git://github.com/tuxpoldo/node-getopt.git#05e498731c14b648fa332ca78d3a301c5e4be440"
+  }
+}
