@@ -15,7 +15,7 @@
   "dependencies": {
     "@xmldom/xmldom": "^0.8.2",
     "adm-zip" : "^0.5.9",
-    "apigee-edge-js": "^0.4.33",
+    "apigee-edge-js": "^0.4.40",
     "node-getopt": "0.2.3",
     "tmp-promise": "^3.0.3",
     "xpath": "^0.0.32"
